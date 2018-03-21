@@ -1,0 +1,19 @@
+\documentclass{article}
+
+\begin{document}
+
+\title{Making a 2d game}
+\maketitle
+
+section{Introduction}
+
+section{Early stages}
+
+Set up grid. Use private final SIZE and SPRITE. Add claim function and print function. Decide to make size of grid
+in constructor since this will allow for easier (smaller scale) testing of certain functions (eg print, init).
+The refactored the print method to a toString method ,overriding the standard method of the object class. This
+can then be printed or autotested. Next add move function. Refactored cur_position from an int[] to a row and
+column int for simplicity. Added test grid as a field. Add tests for move.
+
+Consider how to display grid with graphics. Use group, make it variable size. Need to test? Made it fit the screen
+it is being displayed on. Fiddled around a lot to parameterise all calcs. 
