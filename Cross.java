@@ -4,6 +4,9 @@ import javafx.scene.*;
 import javafx.scene.input.*;
 import javafx.scene.canvas.*;
 import javafx.scene.text.*;
+import javafx.scene.shape.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 
@@ -17,22 +20,44 @@ public class Cross extends Application {
   private int screenHeight;
   private int screenWidth;
   private Text score;
+  private Image player;
+  private ImageView playerView;
+  private ImageView coinView;
+  private Group root;
+  private Canvas canvas;
 
   public void start(Stage stage) {
     grid = new Grid(SIZE, false);
     set_squaresize();
-    Canvas canvas = new Canvas(SIZE*squareSize + MARGIN, SIZE*squareSize + MARGIN);
-    Group root = new Group();
+    canvas = new Canvas(SIZE*squareSize + MARGIN, SIZE*squareSize + MARGIN);
+    root = new Group();
     root.getChildren().add(canvas);
-    score = new Text(10,50,"Score: " + grid.getScore());
-    root.getChildren().add(score);
+    g = canvas.getGraphicsContext2D();
+    draw_background();
+    initialise_score();
     Scene scene = new Scene(root);
+    initialise_player();
+    initialise_coins();
     scene.setOnKeyReleased(this::move);
     stage.setTitle("Game");
     stage.setScene(scene);
-    g = canvas.getGraphicsContext2D();
-    draw();
     stage.show();
+  }
+
+  private void initialise_score() {
+    score = new Text(10,50,"Score: " + grid.getScore());
+    root.getChildren().add(score);
+  }
+
+  private void initialise_coins() {
+    player = new Image("coin.png");
+    coinView = new ImageView();
+    coinView.setImage(player);
+    coinView.setPreserveRatio(true);
+    coinView.setSmooth(true);
+    coinView.setFitWidth(squareSize*0.9);
+    root.getChildren().add(coinView);
+    draw_sprites();
   }
 
   private void set_squaresize() {
@@ -57,25 +82,39 @@ public class Cross extends Application {
       grid.move(0,1);
     }
     score.setText("Score: " + grid.getScore());
-    draw();
+    draw_background();
+    draw_sprites();
     return;
   }
 
-  // Redraw the current state of the grid, from scratch.
-  private void draw() {
+  private void draw_background() {
     g.clearRect(0, 0, SIZE*squareSize + MARGIN, SIZE*squareSize + MARGIN);
     g.setLineWidth(1);
     drawVerticalLines();
     drawHorizontalLines();
-    g.setLineWidth(3);
+  }
+
+  private void initialise_player() {
+    player = new Image("sprite.png");
+    playerView = new ImageView();
+    playerView.setImage(player);
+    playerView.setPreserveRatio(true);
+    playerView.setSmooth(true);
+    playerView.setFitWidth(squareSize);
+    root.getChildren().add(playerView);
+  }
+
+  private void draw_sprites() {
     for (int r=0; r<SIZE; r++) {
       for (int c=0; c<SIZE; c++) {
         char k = grid.get(r,c);
         if (k == 'O') {
-          drawO(squareSize*r + MARGIN/2, squareSize*c + MARGIN/2);
+          playerView.setY(c*squareSize + 10);
+          playerView.setX(r*squareSize + 10);
         }
         else if (k == 'C') {
-          drawC(squareSize*r + MARGIN/2, squareSize*c + MARGIN/2);
+          coinView.setY(c*squareSize + 15);
+          coinView.setX(r*squareSize + 15);
         }
       }
     }
@@ -92,14 +131,6 @@ public class Cross extends Application {
     for (int y = MARGIN/2;y < SIZE*squareSize + MARGIN; y += squareSize) {
       g.strokeLine(MARGIN/2,y,MARGIN/2+SIZE*squareSize,y);
     }
-  }
-
-  // Draw an O
-  private void drawO(double x, double y) {
-    g.strokeOval(squareSize/8+x, squareSize/8+y, squareSize*0.75, squareSize*0.75);
-  }
-  private void drawC(double x, double y) {
-    g.fillOval(squareSize/8+x, squareSize/8+y, squareSize*0.75, squareSize*0.75);
   }
 
 }

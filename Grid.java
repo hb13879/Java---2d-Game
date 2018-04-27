@@ -10,6 +10,7 @@ class Grid {
   private int cur_r;
   private int cur_c;
   private int score = 0;
+  private Random rand = new Random();
 
   private int testNumber = 0;
   private Grid testGrid;
@@ -45,6 +46,7 @@ class Grid {
     cur_c += c;
     if(grid[cur_r][cur_c] == COIN) {
       increment_score();
+      spawn_coin();
     }
     grid[cur_r][cur_c] = SPRITE;
   }
@@ -73,15 +75,20 @@ class Grid {
       grid[0][0] = COIN;
     }
     else {
-      Random rand = new Random();
       for(int i = 0;i<MAXCOINS;i++) {
-        int r_rand = rand.nextInt(SIZE-1);
-        int c_rand = rand.nextInt(SIZE-1);
-        if(grid[r_rand][c_rand] == EMPTY) {
-          grid[r_rand][c_rand] = COIN;
-        }
+        spawn_coin();
       }
     }
+  }
+
+  private void spawn_coin() {
+    int r_rand;
+    int c_rand;
+    do {
+      r_rand = rand.nextInt(SIZE-1);
+      c_rand = rand.nextInt(SIZE-1);
+    } while(grid[r_rand][c_rand] != EMPTY);
+    grid[r_rand][c_rand] = COIN;
   }
 
   @Override
