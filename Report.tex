@@ -16,4 +16,9 @@ can then be printed or autotested. Next add move function. Refactored cur_positi
 column int for simplicity. Added test grid as a field. Add tests for move.
 
 Consider how to display grid with graphics. Use group, make it variable size. Need to test? Made it fit the screen
-it is being displayed on. Fiddled around a lot to parameterise all calcs. 
+it is being displayed on. Fiddled around a lot to parameterise all calcs.
+
+Implemented move function to graphics end - move called from Cross.
+
+Added simple coins. Had to add testmode parameter to grid since random initialisation of coins causes problems with
+unit tests of grid based on strig output. Set so coin in testmode always appears in 0,0.  

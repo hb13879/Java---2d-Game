@@ -5,7 +5,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class Gridpane_test extends Application {
     @Override
     public void start(Stage stage) {
         Group root = new Group();

@@ -3,26 +3,31 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.input.*;
 import javafx.scene.canvas.*;
+import javafx.scene.text.*;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 
 public class Cross extends Application {
   private Grid grid;
   private GraphicsContext g;
-  private final int SIZE = 90;
+  private final int SIZE = 10;
   private final int MARGIN = 20;
   private final int BUFFER = 30;
   private int squareSize;
   private int screenHeight;
   private int screenWidth;
+  private Text score;
 
   public void start(Stage stage) {
-    grid = new Grid(SIZE);
+    grid = new Grid(SIZE, false);
     set_squaresize();
     Canvas canvas = new Canvas(SIZE*squareSize + MARGIN, SIZE*squareSize + MARGIN);
-    Group root = new Group(canvas);
+    Group root = new Group();
+    root.getChildren().add(canvas);
+    score = new Text(10,50,"Score: " + grid.getScore());
+    root.getChildren().add(score);
     Scene scene = new Scene(root);
-    //scene.setOnMousePressed(this::move);
+    scene.setOnKeyReleased(this::move);
     stage.setTitle("Game");
     stage.setScene(scene);
     g = canvas.getGraphicsContext2D();
@@ -38,13 +43,24 @@ public class Cross extends Application {
   }
 
   // The current player makes a move in one of the cells.
-/*  private void move(MouseEvent e) {
-    int x = (int) e.getSceneX() / 100;
-    int y = (int) e.getSceneY() / 100;
-    grid.move(x, y);
+  private void move(KeyEvent e) {
+    if(e.getCode().getName().equals("Right")) {
+      grid.move(1,0);
+    }
+    else if(e.getCode().getName().equals("Left")) {
+      grid.move(-1,0);
+    }
+    else if(e.getCode().getName().equals("Up")) {
+      grid.move(0,-1);
+    }
+    else if(e.getCode().getName().equals("Down")) {
+      grid.move(0,1);
+    }
+    score.setText("Score: " + grid.getScore());
     draw();
+    return;
   }
-*/
+
   // Redraw the current state of the grid, from scratch.
   private void draw() {
     g.clearRect(0, 0, SIZE*squareSize + MARGIN, SIZE*squareSize + MARGIN);
@@ -55,7 +71,12 @@ public class Cross extends Application {
     for (int r=0; r<SIZE; r++) {
       for (int c=0; c<SIZE; c++) {
         char k = grid.get(r,c);
-        if (k == 'O') drawO(squareSize*r + MARGIN/2, squareSize*c + MARGIN/2);
+        if (k == 'O') {
+          drawO(squareSize*r + MARGIN/2, squareSize*c + MARGIN/2);
+        }
+        else if (k == 'C') {
+          drawC(squareSize*r + MARGIN/2, squareSize*c + MARGIN/2);
+        }
       }
     }
   }
@@ -76,6 +97,9 @@ public class Cross extends Application {
   // Draw an O
   private void drawO(double x, double y) {
     g.strokeOval(squareSize/8+x, squareSize/8+y, squareSize*0.75, squareSize*0.75);
+  }
+  private void drawC(double x, double y) {
+    g.fillOval(squareSize/8+x, squareSize/8+y, squareSize*0.75, squareSize*0.75);
   }
 
 }
