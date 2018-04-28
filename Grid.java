@@ -5,7 +5,7 @@ class Grid {
   private final char EMPTY = '.';
   private final char COIN = 'C';
   private final int SIZE;
-  private final int MAXCOINS = 2;
+  private final int MAXCOINS = 5;
   private char[][] grid;
   private int cur_r;
   private int cur_c;
@@ -49,6 +49,7 @@ class Grid {
       spawn_coin();
     }
     grid[cur_r][cur_c] = SPRITE;
+    return;
   }
 
   private void increment_score() {

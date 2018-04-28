@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.awt.Toolkit;
 import java.awt.Dimension;
+import java.util.*;
 
 public class Cross extends Application {
   private Grid grid;
@@ -19,12 +20,14 @@ public class Cross extends Application {
   private int squareSize;
   private int screenHeight;
   private int screenWidth;
+  private Player player;
+  private Coin coin;
   private Text score;
-  private Image player;
   private ImageView playerView;
   private ImageView coinView;
   private Group root;
   private Canvas canvas;
+  private List<Coin> coinList = new ArrayList<Coin>();
 
   public void start(Stage stage) {
     grid = new Grid(SIZE, false);
@@ -36,8 +39,7 @@ public class Cross extends Application {
     draw_background();
     initialise_score();
     Scene scene = new Scene(root);
-    initialise_player();
-    initialise_coins();
+    initialise_sprites();
     scene.setOnKeyReleased(this::move);
     stage.setTitle("Game");
     stage.setScene(scene);
@@ -49,15 +51,10 @@ public class Cross extends Application {
     root.getChildren().add(score);
   }
 
-  private void initialise_coins() {
-    player = new Image("coin.png");
-    coinView = new ImageView();
-    coinView.setImage(player);
-    coinView.setPreserveRatio(true);
-    coinView.setSmooth(true);
-    coinView.setFitWidth(squareSize*0.9);
-    root.getChildren().add(coinView);
-    draw_sprites();
+  private void initialise_coin(int r, int c) {
+    coin = new Coin(squareSize,r,c);
+    root.getChildren().add(coin.getCoinView());
+    coinList.add(coin);
   }
 
   private void set_squaresize() {
@@ -67,7 +64,7 @@ public class Cross extends Application {
     squareSize = (Math.min(screenHeight,screenWidth) - MARGIN - BUFFER)/SIZE;
   }
 
-  // The current player makes a move in one of the cells.
+
   private void move(KeyEvent e) {
     if(e.getCode().getName().equals("Right")) {
       grid.move(1,0);
@@ -82,54 +79,56 @@ public class Cross extends Application {
       grid.move(0,1);
     }
     score.setText("Score: " + grid.getScore());
-    draw_background();
     draw_sprites();
     return;
   }
 
-  private void draw_background() {
-    g.clearRect(0, 0, SIZE*squareSize + MARGIN, SIZE*squareSize + MARGIN);
-    g.setLineWidth(1);
-    drawVerticalLines();
-    drawHorizontalLines();
-  }
-
-  private void initialise_player() {
-    player = new Image("sprite.png");
-    playerView = new ImageView();
-    playerView.setImage(player);
-    playerView.setPreserveRatio(true);
-    playerView.setSmooth(true);
-    playerView.setFitWidth(squareSize);
-    root.getChildren().add(playerView);
-  }
-
   private void draw_sprites() {
+    int i = 0;
     for (int r=0; r<SIZE; r++) {
       for (int c=0; c<SIZE; c++) {
         char k = grid.get(r,c);
         if (k == 'O') {
-          playerView.setY(c*squareSize + 10);
-          playerView.setX(r*squareSize + 10);
+          player.move(r,c);
         }
         else if (k == 'C') {
-          coinView.setY(c*squareSize + 15);
-          coinView.setX(r*squareSize + 15);
+          coinList.get(i).move(r,c);
+          i++;
         }
       }
     }
   }
 
-  // Draw the grid lines.
-  private void drawVerticalLines() {
+
+  private void draw_background() {
+    g.clearRect(0, 0, SIZE*squareSize + MARGIN, SIZE*squareSize + MARGIN);
+    g.setLineWidth(1);
+    //draw vertical lines
     for (int x = MARGIN/2;x < SIZE*squareSize + MARGIN; x += squareSize) {
       g.strokeLine(x,MARGIN/2,x,MARGIN/2+SIZE*squareSize);
     }
-  }
-
-  private void drawHorizontalLines() {
+    //draw horizontal lines
     for (int y = MARGIN/2;y < SIZE*squareSize + MARGIN; y += squareSize) {
       g.strokeLine(MARGIN/2,y,MARGIN/2+SIZE*squareSize,y);
+    }
+  }
+
+  private void initialise_player(int r, int c) {
+    player = new Player(squareSize,r,c);
+    root.getChildren().add(player.getPlayerView());
+  }
+
+  private void initialise_sprites() {
+    for (int r=0; r<SIZE; r++) {
+      for (int c=0; c<SIZE; c++) {
+        char k = grid.get(r,c);
+        if (k == 'O') {
+          initialise_player(r,c);
+        }
+        else if (k == 'C') {
+          initialise_coin(r,c);
+        }
+      }
     }
   }
 
