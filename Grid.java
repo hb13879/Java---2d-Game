@@ -4,13 +4,17 @@ class Grid {
   private final char SPRITE = 'O';
   private final char EMPTY = '.';
   private final char COIN = 'C';
+  private final char ENEMY = 'E';
+
   private final int SIZE;
   private final int MAXCOINS = 5;
+  private final int MAXENEMIES = 3;
   private char[][] grid;
   private int cur_r;
   private int cur_c;
   private int score = 0;
   private Random rand = new Random();
+  private Boolean gameOver = false;
 
   private int testNumber = 0;
   private Grid testGrid;
@@ -31,6 +35,7 @@ class Grid {
     cur_c = SIZE/2;
     initialise_grid();
     initialise_coins(testMode);
+    initialise_enemies(testMode);
   }
 
   char get(int r, int c) {
@@ -47,6 +52,9 @@ class Grid {
     if(grid[cur_r][cur_c] == COIN) {
       increment_score();
       spawn_coin();
+    }
+    else if(grid[cur_r][cur_c] == ENEMY) {
+      gameOver = true;
     }
     grid[cur_r][cur_c] = SPRITE;
     return;
@@ -71,6 +79,17 @@ class Grid {
     grid[cur_r][cur_c] = SPRITE;
   }
 
+  private void initialise_enemies(Boolean testMode) {
+    if(testMode) {
+      grid[1][0] = ENEMY;
+    }
+    else {
+      for(int i = 0;i<MAXENEMIES;i++) {
+        spawn_enemy();
+      }
+    }
+  }
+
   private void initialise_coins(Boolean testMode) {
     if(testMode) {
       grid[0][0] = COIN;
@@ -82,6 +101,16 @@ class Grid {
     }
   }
 
+  private void spawn_enemy() {
+    int r_rand;
+    int c_rand;
+    do {
+      r_rand = rand.nextInt(SIZE-1);
+      c_rand = rand.nextInt(SIZE-1);
+    } while(grid[r_rand][c_rand] != EMPTY);
+    grid[r_rand][c_rand] = ENEMY;
+  }
+
   private void spawn_coin() {
     int r_rand;
     int c_rand;
@@ -90,6 +119,10 @@ class Grid {
       c_rand = rand.nextInt(SIZE-1);
     } while(grid[r_rand][c_rand] != EMPTY);
     grid[r_rand][c_rand] = COIN;
+  }
+
+  Boolean gameOver() {
+    return gameOver;
   }
 
   @Override
@@ -113,40 +146,40 @@ class Grid {
 
   void test_init() {
     testGrid = new Grid(3, true);
-    is(testGrid.toString(),"C../.O./...");
+    is(testGrid.toString(),"C../EO./...");
   }
 
   void test_move() {
     testGrid.move(1,0);
-    is(testGrid.toString(),"C../.../.O.");
+    is(testGrid.toString(),"C../E../.O.");
     testGrid.move(-1,0);
-    is(testGrid.toString(),"C../.O./...");
+    is(testGrid.toString(),"C../EO./...");
     testGrid.move(0,1);
-    is(testGrid.toString(),"C../..O/...");
+    is(testGrid.toString(),"C../E.O/...");
     testGrid.move(0,-1);
-    is(testGrid.toString(),"C../.O./...");
+    is(testGrid.toString(),"C../EO./...");
     //test move off top
     testGrid.move(-1,0);
-    is(testGrid.toString(),"CO./.../...");
+    is(testGrid.toString(),"CO./E../...");
     testGrid.move(-1,0);
-    is(testGrid.toString(),"CO./.../...");
+    is(testGrid.toString(),"CO./E../...");
     //test move off right
     testGrid.move(0,1);
-    is(testGrid.toString(),"C.O/.../...");
+    is(testGrid.toString(),"C.O/E../...");
     testGrid.move(0,1);
-    is(testGrid.toString(),"C.O/.../...");
+    is(testGrid.toString(),"C.O/E../...");
     //test move off bottom
     testGrid.move(1,0);
     testGrid.move(1,0);
-    is(testGrid.toString(),"C../.../..O");
+    is(testGrid.toString(),"C../E../..O");
     testGrid.move(1,0);
-    is(testGrid.toString(),"C../.../..O");
+    is(testGrid.toString(),"C../E../..O");
     //test move off left
     testGrid.move(0,-1);
     testGrid.move(0,-1);
-    is(testGrid.toString(),"C../.../O..");
+    is(testGrid.toString(),"C../E../O..");
     testGrid.move(0,-1);
-    is(testGrid.toString(),"C../.../O..");
+    is(testGrid.toString(),"C../E../O..");
 
   }
 

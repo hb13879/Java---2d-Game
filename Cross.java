@@ -10,6 +10,11 @@ import javafx.scene.image.ImageView;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 import java.util.*;
+import javafx.animation.*;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 
 public class Cross extends Application {
   private Grid grid;
@@ -20,14 +25,19 @@ public class Cross extends Application {
   private int squareSize;
   private int screenHeight;
   private int screenWidth;
+  private int STARTTIME = 60;
   private Player player;
   private Coin coin;
+  private Enemy enemy;
   private Text score;
+  private Text timerText;
   private ImageView playerView;
   private ImageView coinView;
   private Group root;
   private Canvas canvas;
   private List<Coin> coinList = new ArrayList<Coin>();
+  private Timeline timeline;
+  private int timeSeconds = STARTTIME;
 
   public void start(Stage stage) {
     grid = new Grid(SIZE, false);
@@ -38,17 +48,52 @@ public class Cross extends Application {
     g = canvas.getGraphicsContext2D();
     draw_background();
     initialise_score();
+    initialise_time();
+    start_timer();
     Scene scene = new Scene(root);
     initialise_sprites();
     scene.setOnKeyReleased(this::move);
     stage.setTitle("Game");
     stage.setScene(scene);
     stage.show();
+    if(checkLose()) {
+      try {
+        Thread.sleep(100);
+      }
+      catch(Exception e){
+        return;
+      }
+      Platform.exit();
+    }
+  }
+
+  private void start_timer() {
+    timeline = new Timeline();
+    KeyFrame frame= new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>(){
+      @Override public void handle(ActionEvent event) {
+        timeSeconds--;
+        timerText.setText("Time: " + timeSeconds);
+        if(timeSeconds<=0){
+          timeline.stop();
+        }
+      }
+    });
+    timeline.setCycleCount(Timeline.INDEFINITE);
+    timeline.getKeyFrames().add(frame);
+    if(timeline!=null){
+      timeline.stop();
+    }
+    timeline.play();
   }
 
   private void initialise_score() {
     score = new Text(10,50,"Score: " + grid.getScore());
     root.getChildren().add(score);
+  }
+
+  private void initialise_time() {
+    timerText = new Text(50,50,"Time: " + timeSeconds);
+    root.getChildren().add(timerText);
   }
 
   private void initialise_coin(int r, int c) {
@@ -79,8 +124,19 @@ public class Cross extends Application {
       grid.move(0,1);
     }
     score.setText("Score: " + grid.getScore());
+    timerText.setText("Time: " + timeSeconds);
     draw_sprites();
+    checkLose();
     return;
+  }
+
+  private Boolean checkLose() {
+    if(grid.gameOver()) {
+      Text gameOver = new Text(100,500,"You Lose");
+      root.getChildren().add(gameOver);
+      return true;
+    }
+    return false;
   }
 
   private void draw_sprites() {
@@ -118,6 +174,11 @@ public class Cross extends Application {
     root.getChildren().add(player.getPlayerView());
   }
 
+  private void initialise_enemy(int r, int c) {
+    enemy = new Enemy(squareSize,r,c);
+    root.getChildren().add(enemy.getPlayerView());
+  }
+
   private void initialise_sprites() {
     for (int r=0; r<SIZE; r++) {
       for (int c=0; c<SIZE; c++) {
@@ -127,6 +188,9 @@ public class Cross extends Application {
         }
         else if (k == 'C') {
           initialise_coin(r,c);
+        }
+        else if (k == 'E') {
+          initialise_enemy(r,c);
         }
       }
     }

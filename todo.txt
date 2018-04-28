@@ -1,0 +1,3 @@
+create enumerated type
+1 line comment above functions
+sort out unit testing in grid
