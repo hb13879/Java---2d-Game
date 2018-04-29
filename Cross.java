@@ -17,8 +17,8 @@ import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
 public class Cross extends Application {
+
   private Grid grid;
-  private GraphicsContext g;
   private final int SIZE = 10;
   private final int MARGIN = 20;
   private final int BUFFER = 30;
@@ -26,6 +26,8 @@ public class Cross extends Application {
   private int screenHeight;
   private int screenWidth;
   private int STARTTIME = 60;
+  private int timeSeconds = STARTTIME;
+
   private Player player;
   private Coin coin;
   private Enemy enemy;
@@ -33,13 +35,49 @@ public class Cross extends Application {
   private Text timerText;
   private ImageView playerView;
   private ImageView coinView;
+  private Timeline timeline;
+
+  private GraphicsContext g;
   private Group root;
   private Canvas canvas;
+  private Scene scene;
   private List<Coin> coinList = new ArrayList<Coin>();
-  private Timeline timeline;
-  private int timeSeconds = STARTTIME;
 
   public void start(Stage stage) {
+    setup_grid();
+    initialise_game();
+    scene = new Scene(root);
+    scene.setOnKeyReleased(this::move);
+    setup_stage(stage);
+    stage.show();
+    game_end();
+  }
+
+  private void game_end() {
+    if(checkLose()) {
+      try {
+        Platform.exit();
+      }
+      catch(Exception e){
+        return;
+      }
+    }
+  }
+
+  private void setup_stage(Stage stage) {
+    stage.setTitle("Game");
+    stage.setScene(scene);
+    stage.setFullScreen(true);
+  }
+
+  private void initialise_game() {
+    initialise_score();
+    initialise_time();
+    initialise_sprites();
+    start_timer();
+  }
+
+  private void setup_grid() {
     grid = new Grid(SIZE, false);
     set_squaresize();
     canvas = new Canvas(SIZE*squareSize + MARGIN, SIZE*squareSize + MARGIN);
@@ -47,24 +85,6 @@ public class Cross extends Application {
     root.getChildren().add(canvas);
     g = canvas.getGraphicsContext2D();
     draw_background();
-    initialise_score();
-    initialise_time();
-    start_timer();
-    Scene scene = new Scene(root);
-    initialise_sprites();
-    scene.setOnKeyReleased(this::move);
-    stage.setTitle("Game");
-    stage.setScene(scene);
-    stage.show();
-    if(checkLose()) {
-      try {
-        Thread.sleep(100);
-      }
-      catch(Exception e){
-        return;
-      }
-      Platform.exit();
-    }
   }
 
   private void start_timer() {
@@ -111,16 +131,16 @@ public class Cross extends Application {
 
 
   private void move(KeyEvent e) {
-    if(e.getCode().getName().equals("Right")) {
+    if(e.getCode()==KeyCode.RIGHT) {
       grid.move(1,0);
     }
-    else if(e.getCode().getName().equals("Left")) {
+    else if(e.getCode()==KeyCode.LEFT) {
       grid.move(-1,0);
     }
-    else if(e.getCode().getName().equals("Up")) {
+    else if(e.getCode()==KeyCode.UP) {
       grid.move(0,-1);
     }
-    else if(e.getCode().getName().equals("Down")) {
+    else if(e.getCode()==KeyCode.DOWN) {
       grid.move(0,1);
     }
     score.setText("Score: " + grid.getScore());
