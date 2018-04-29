@@ -4,6 +4,7 @@ import javafx.scene.shape.*;
 import javafx.scene.shape.Path.*;
 import javafx.animation.PathTransition.*;
 import javafx.animation.PathTransition;
+import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 
@@ -15,6 +16,9 @@ public class Player {
   private int squareSize;
   private final int MARGIN = 10;
   private final int BUFFER = 30;
+  private final int ROTATE_TRANSITION_LEN = 100;
+  private final int PLAYER_TRANSITION_LEN = 100;
+
 
   Player(int sqsize, int r, int c) {
     squareSize = sqsize;
@@ -26,6 +30,14 @@ public class Player {
     playerView.setFitWidth(squareSize);
     playerView.setX(r*squareSize + MARGIN);
     playerView.setY(c*squareSize + MARGIN);
+  }
+
+  void rotate(double degrees) {
+    RotateTransition tx = new RotateTransition(Duration.millis(ROTATE_TRANSITION_LEN), playerView);
+    tx.setFromAngle(playerView.getRotate());
+    tx.setToAngle(degrees);
+    tx.play();
+    playerView.setRotate(degrees);
   }
 
   void move(int r, int c) {
@@ -42,7 +54,7 @@ public class Player {
     path.getElements().add(moveTo);
     path.getElements().add(lineTo);
     PathTransition pathTransition = new PathTransition();
-    pathTransition.setDuration(Duration.millis(100));
+    pathTransition.setDuration(Duration.millis(PLAYER_TRANSITION_LEN));
     pathTransition.setPath(path);
     pathTransition.setNode(playerView);
     pathTransition.play();

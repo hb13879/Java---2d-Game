@@ -25,7 +25,7 @@ public class Cross extends Application {
   private int squareSize;
   private int screenHeight;
   private int screenWidth;
-  private int STARTTIME = 60;
+  private int STARTTIME = 10;
   private int timeSeconds = STARTTIME;
 
   private Player player;
@@ -50,19 +50,8 @@ public class Cross extends Application {
     scene.setOnKeyReleased(this::move);
     setup_stage(stage);
     stage.show();
-    game_end();
   }
 
-  private void game_end() {
-    if(checkLose()) {
-      try {
-        Platform.exit();
-      }
-      catch(Exception e){
-        return;
-      }
-    }
-  }
 
   private void setup_stage(Stage stage) {
     stage.setTitle("Game");
@@ -95,6 +84,7 @@ public class Cross extends Application {
         timerText.setText("Time: " + timeSeconds);
         if(timeSeconds<=0){
           timeline.stop();
+          end_game();
         }
       }
     });
@@ -133,30 +123,36 @@ public class Cross extends Application {
   private void move(KeyEvent e) {
     if(e.getCode()==KeyCode.RIGHT) {
       grid.move(1,0);
+      player.rotate(90);
     }
     else if(e.getCode()==KeyCode.LEFT) {
       grid.move(-1,0);
+      player.rotate(270);
     }
     else if(e.getCode()==KeyCode.UP) {
       grid.move(0,-1);
+      player.rotate(0);
     }
     else if(e.getCode()==KeyCode.DOWN) {
       grid.move(0,1);
+      player.rotate(180);
     }
     score.setText("Score: " + grid.getScore());
     timerText.setText("Time: " + timeSeconds);
     draw_sprites();
     checkLose();
-    return;
   }
 
-  private Boolean checkLose() {
+  private void end_game() {
+    Platform.exit();
+  }
+
+  private void checkLose() {
     if(grid.gameOver()) {
       Text gameOver = new Text(100,500,"You Lose");
       root.getChildren().add(gameOver);
-      return true;
+      end_game();
     }
-    return false;
   }
 
   private void draw_sprites() {
