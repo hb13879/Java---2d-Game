@@ -4,3 +4,5 @@ sort out unit testing in grid
 add scenery eg trees
 add inheritance
 add restart button
+add instructions
+get rid of magic numbers

@@ -49,6 +49,8 @@ public class Cross extends Application {
   private GridPane pane;
   private Scene scene;
   private List<Coin> coinList = new ArrayList<Coin>();
+  private List<Enemy> enemyList = new ArrayList<Enemy>();
+  private Button restart;
 
   public void start(Stage stage) {
     setup_grid();
@@ -58,6 +60,7 @@ public class Cross extends Application {
     root.getChildren().add(pane);
     scene = new Scene(root);
 
+    restart.setOnAction(this::press);
     scene.setOnKeyReleased(this::move);
     setup_stage(stage);
     stage.show();
@@ -71,6 +74,11 @@ public class Cross extends Application {
     //cancel.setMaxWidth(300);
   }
 
+  private void press(ActionEvent e) {
+    timeSeconds = STARTTIME;
+    grid.reset_game();
+    draw_sprites();
+  }
 
   private void setup_stage(Stage stage) {
     stage.setTitle("Game");
@@ -81,8 +89,14 @@ public class Cross extends Application {
   private void initialise_game() {
     initialise_score();
     initialise_time();
+    setup_restart();
     initialise_sprites();
     start_timer();
+  }
+
+  private void setup_restart() {
+    restart = new Button("Restart");
+    pane.add(restart, 0, 6,3,3);
   }
 
   private void setup_grid() {
@@ -116,8 +130,17 @@ public class Cross extends Application {
   }
 
   private void initialise_score() {
-    scoreLabel = new Label("Score: " + grid.getScore());
-    pane.add(scoreLabel, 1, 0, 2, 1);
+
+    Image scoreIcon = new Image("coin.png");
+    ImageView scoreIconView = new ImageView();
+    scoreIconView.setImage(scoreIcon);
+    scoreIconView.setPreserveRatio(true);
+    scoreIconView.setSmooth(true);
+    scoreIconView.setFitWidth(squareSize);
+    scoreLabel = new Label("Score: " + grid.getScore(), scoreIconView);
+    scoreLabel.setFont(new Font(20));
+    scoreLabel.setStyle("-fx-text-fill: blue;-fx-border-color:  #545454;-fx-border-width: 3px;-fx-border-style: solid;");
+    pane.add(scoreLabel, 0, 3,3,3);
   }
 
   private void initialise_time() {
@@ -128,21 +151,16 @@ public class Cross extends Application {
     timerIconView.setSmooth(true);
     timerIconView.setFitWidth(squareSize);
     timeLabel = new Label("Time: " + timeSeconds, timerIconView);
-    //Label label3 = new Label("Search", new ImageView(image));
-    pane.add(timeLabel, 0, 0);
-  }
-
-  private void initialise_coin(int r, int c) {
-    coin = new Coin(squareSize,r,c, PANEL);
-    root.getChildren().add(coin.getCoinView());
-    coinList.add(coin);
+    timeLabel.setFont(new Font(20));
+    timeLabel.setStyle("-fx-text-fill: blue;");
+    pane.add(timeLabel, 0, 0, 3,3);
   }
 
   private void set_squaresize() {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     screenHeight = (int) screenSize.getHeight();
     screenWidth = (int) screenSize.getWidth();
-    squareSize = (Math.min(screenHeight,screenWidth) - MARGIN - BUFFER - PANEL)/SIZE;
+    squareSize = (Math.min(screenHeight- MARGIN - BUFFER,screenWidth - MARGIN - BUFFER- PANEL)  )/SIZE;
   }
 
 
@@ -183,6 +201,7 @@ public class Cross extends Application {
 
   private void draw_sprites() {
     int i = 0;
+    int j = 0;
     for (int r=0; r<SIZE; r++) {
       for (int c=0; c<SIZE; c++) {
         char k = grid.get(r,c);
@@ -192,6 +211,10 @@ public class Cross extends Application {
         else if (k == 'C') {
           coinList.get(i).move(r,c);
           i++;
+        }
+        else if (k == 'E') {
+          enemyList.get(j).move(r,c);
+          j++;
         }
       }
     }
@@ -219,6 +242,13 @@ public class Cross extends Application {
   private void initialise_enemy(int r, int c) {
     enemy = new Enemy(squareSize,r,c, PANEL);
     root.getChildren().add(enemy.getPlayerView());
+    enemyList.add(enemy);
+  }
+
+  private void initialise_coin(int r, int c) {
+    coin = new Coin(squareSize,r,c, PANEL);
+    root.getChildren().add(coin.getCoinView());
+    coinList.add(coin);
   }
 
   private void initialise_sprites() {

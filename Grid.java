@@ -28,6 +28,15 @@ class Grid {
     test();
   }
 
+  void reset_game() {
+    score = 0;
+    cur_r = SIZE/2;
+    cur_c = SIZE/2;
+    initialise_grid();
+    initialise_coins(false);
+    initialise_enemies(false);
+  }
+
   Grid(int size, Boolean testMode) {
     SIZE = size;
     grid = new char[SIZE][SIZE];
