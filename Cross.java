@@ -5,6 +5,9 @@ import javafx.scene.input.*;
 import javafx.scene.canvas.*;
 import javafx.scene.text.*;
 import javafx.scene.shape.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.geometry.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.awt.Toolkit;
@@ -15,6 +18,7 @@ import javafx.animation.Timeline;
 import javafx.util.Duration;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
+import javafx.beans.property.SimpleIntegerProperty;
 
 public class Cross extends Application {
 
@@ -22,6 +26,7 @@ public class Cross extends Application {
   private final int SIZE = 10;
   private final int MARGIN = 20;
   private final int BUFFER = 30;
+  private final int PANEL = 200;
   private int squareSize;
   private int screenHeight;
   private int screenWidth;
@@ -31,25 +36,39 @@ public class Cross extends Application {
   private Player player;
   private Coin coin;
   private Enemy enemy;
-  private Text score;
-  private Text timerText;
+  //private Text timerText;
   private ImageView playerView;
   private ImageView coinView;
   private Timeline timeline;
+  private Label timeLabel;
+  private Label scoreLabel;
 
   private GraphicsContext g;
   private Group root;
   private Canvas canvas;
+  private GridPane pane;
   private Scene scene;
   private List<Coin> coinList = new ArrayList<Coin>();
 
   public void start(Stage stage) {
     setup_grid();
+    pane = new GridPane();
     initialise_game();
+    adjust(pane);
+    root.getChildren().add(pane);
     scene = new Scene(root);
+
     scene.setOnKeyReleased(this::move);
     setup_stage(stage);
     stage.show();
+  }
+
+  private void adjust(GridPane pane) {
+    pane.setPadding(new Insets(10));
+    pane.setHgap(10);
+    pane.setVgap(10);
+    //find.setMaxWidth(300);
+    //cancel.setMaxWidth(300);
   }
 
 
@@ -69,7 +88,7 @@ public class Cross extends Application {
   private void setup_grid() {
     grid = new Grid(SIZE, false);
     set_squaresize();
-    canvas = new Canvas(SIZE*squareSize + MARGIN, SIZE*squareSize + MARGIN);
+    canvas = new Canvas(SIZE*squareSize + MARGIN + PANEL, SIZE*squareSize + MARGIN);
     root = new Group();
     root.getChildren().add(canvas);
     g = canvas.getGraphicsContext2D();
@@ -81,7 +100,7 @@ public class Cross extends Application {
     KeyFrame frame= new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>(){
       @Override public void handle(ActionEvent event) {
         timeSeconds--;
-        timerText.setText("Time: " + timeSeconds);
+        timeLabel.setText("Time: " + timeSeconds);
         if(timeSeconds<=0){
           timeline.stop();
           end_game();
@@ -97,17 +116,24 @@ public class Cross extends Application {
   }
 
   private void initialise_score() {
-    score = new Text(10,50,"Score: " + grid.getScore());
-    root.getChildren().add(score);
+    scoreLabel = new Label("Score: " + grid.getScore());
+    pane.add(scoreLabel, 1, 0, 2, 1);
   }
 
   private void initialise_time() {
-    timerText = new Text(50,50,"Time: " + timeSeconds);
-    root.getChildren().add(timerText);
+    Image timerIcon = new Image("clock.png");
+    ImageView timerIconView = new ImageView();
+    timerIconView.setImage(timerIcon);
+    timerIconView.setPreserveRatio(true);
+    timerIconView.setSmooth(true);
+    timerIconView.setFitWidth(squareSize);
+    timeLabel = new Label("Time: " + timeSeconds, timerIconView);
+    //Label label3 = new Label("Search", new ImageView(image));
+    pane.add(timeLabel, 0, 0);
   }
 
   private void initialise_coin(int r, int c) {
-    coin = new Coin(squareSize,r,c);
+    coin = new Coin(squareSize,r,c, PANEL);
     root.getChildren().add(coin.getCoinView());
     coinList.add(coin);
   }
@@ -116,7 +142,7 @@ public class Cross extends Application {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     screenHeight = (int) screenSize.getHeight();
     screenWidth = (int) screenSize.getWidth();
-    squareSize = (Math.min(screenHeight,screenWidth) - MARGIN - BUFFER)/SIZE;
+    squareSize = (Math.min(screenHeight,screenWidth) - MARGIN - BUFFER - PANEL)/SIZE;
   }
 
 
@@ -137,8 +163,8 @@ public class Cross extends Application {
       grid.move(0,1);
       player.rotate(180);
     }
-    score.setText("Score: " + grid.getScore());
-    timerText.setText("Time: " + timeSeconds);
+    scoreLabel.setText("Score: " + grid.getScore());
+    timeLabel.setText("Time: " + timeSeconds);
     draw_sprites();
     checkLose();
   }
@@ -173,25 +199,25 @@ public class Cross extends Application {
 
 
   private void draw_background() {
-    g.clearRect(0, 0, SIZE*squareSize + MARGIN, SIZE*squareSize + MARGIN);
+    g.clearRect(0, 0, SIZE*squareSize + MARGIN + PANEL, SIZE*squareSize + MARGIN);
     g.setLineWidth(1);
     //draw vertical lines
-    for (int x = MARGIN/2;x < SIZE*squareSize + MARGIN; x += squareSize) {
+    for (int x = MARGIN/2 + PANEL;x < SIZE*squareSize + MARGIN + PANEL; x += squareSize) {
       g.strokeLine(x,MARGIN/2,x,MARGIN/2+SIZE*squareSize);
     }
     //draw horizontal lines
     for (int y = MARGIN/2;y < SIZE*squareSize + MARGIN; y += squareSize) {
-      g.strokeLine(MARGIN/2,y,MARGIN/2+SIZE*squareSize,y);
+      g.strokeLine(MARGIN/2 + PANEL,y,MARGIN/2+SIZE*squareSize + PANEL,y);
     }
   }
 
   private void initialise_player(int r, int c) {
-    player = new Player(squareSize,r,c);
+    player = new Player(squareSize,r,c, PANEL);
     root.getChildren().add(player.getPlayerView());
   }
 
   private void initialise_enemy(int r, int c) {
-    enemy = new Enemy(squareSize,r,c);
+    enemy = new Enemy(squareSize,r,c, PANEL);
     root.getChildren().add(enemy.getPlayerView());
   }
 
