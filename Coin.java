@@ -1,35 +1,10 @@
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
+public class Coin extends Entity {
 
-public class Coin {
-
-  private Image sprite;
-  private ImageView coinView;
-  private int squareSize;
-  private int PANEL;
-  private final int MARGIN = 14;
-
-  Coin(int sqSize, int panel) {
-    PANEL = panel;
-    squareSize = sqSize;
+  Coin(int sqsize, int panel) {
+    super(sqsize,panel);
     sprite = new Image("coin.png");
-    coinView = new ImageView();
-    coinView.setImage(sprite);
-    coinView.setPreserveRatio(true);
-    coinView.setSmooth(true);
-    coinView.setFitWidth(squareSize*0.9);
-    //coinView.setX(r*squareSize + MARGIN + PANEL);
-    //coinView.setY(c*squareSize + MARGIN);
+    entityView.setImage(sprite);
   }
-
-  ImageView getCoinView() {
-    return coinView;
-  }
-
-  void move(int r, int c) {
-    coinView.setX(r*squareSize + MARGIN + PANEL);
-    coinView.setY(c*squareSize + MARGIN);
-  }
-
 }

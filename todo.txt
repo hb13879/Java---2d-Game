@@ -7,3 +7,4 @@ add restart button
 add instructions
 get rid of magic numbers
 add sound?
+high score

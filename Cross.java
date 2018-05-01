@@ -28,39 +28,30 @@ public class Cross extends Application {
   private final int BUFFER = 30;
   private final int PANEL = 200;
   private final String instructions =  "Collect as many coins as you can before time runs out! But be careful - don't run into any enemies...";
-  private int squareSize;
-  private int screenHeight;
-  private int screenWidth;
+  private int squareSize,screenHeight,screenWidth;
   private int STARTTIME = 10;
   private int timeSeconds = STARTTIME;
+  private Boolean gameOver = false;
 
   private Player player;
   private Coin coin;
   private Enemy enemy;
-  private ImageView playerView;
-  private ImageView coinView;
+  private ImageView playerView,coinView;
   private Timeline timeline;
-  private Label timeLabel;
-  private Label scoreLabel;
-  private Label playAgain;
+  private Label timeLabel, scoreLabel,playAgain;
   private TextArea instruct;
-
-  private GraphicsContext g;
-  private Scene scene;
-  private Group root = new Group();
-  private Canvas canvas;
-  private GridPane sidebar = new GridPane();
-  private GridPane gameOverPopup = new GridPane();
   private List<Coin> coinList = new ArrayList<Coin>();
   private List<Enemy> enemyList = new ArrayList<Enemy>();
-  private Button restart1;
-  private Button quit1;
-  private Button quit2;
-  private Boolean gameOver = false;
-  private Button restart2;
+  private Button restart1,restart2,quit1,quit2;
+  private GridPane sidebar = new GridPane();
+  private GridPane gameOverPopup = new GridPane();
+
+  private Group root = new Group();
+  private Scene scene = new Scene(root);
+  private Canvas canvas;
 
   public void start(Stage stage) {
-    scene = new Scene(root);
+    //scene = new Scene(root);
     scene.getStylesheets().add("ass3Style.css");
     adjust_stage(stage);
     setup_game();
@@ -69,8 +60,8 @@ public class Cross extends Application {
 
   private void setup_game() {
     setup_grid();
-    initialise_UI();
     create_sprites();
+    initialise_UI();
     setup_callbacks();
     start_timer();
   }
@@ -93,16 +84,16 @@ public class Cross extends Application {
 
   private void create_sprites() {
     player = new Player(squareSize, PANEL);
-    root.getChildren().add(player.getPlayerView());
+    root.getChildren().add(player.getEntityView());
     for (int i = 0;i < grid.getCoins();i++) {
       coin = new Coin(squareSize, PANEL);
       coinList.add(coin);
-      root.getChildren().add(coin.getCoinView());
+      root.getChildren().add(coin.getEntityView());
     }
     for (int i = 0;i < grid.getCoins();i++) {
       enemy = new Enemy(squareSize, PANEL);
       enemyList.add(enemy);
-      root.getChildren().add(enemy.getPlayerView());
+      root.getChildren().add(enemy.getEntityView());
     }
     draw_sprites();
   }
@@ -115,8 +106,6 @@ public class Cross extends Application {
     quit2.setOnAction(this::quit);
     scene.setOnKeyReleased(this::move);
   }
-
-
 
   private void layout_panels() {
     sidebar.add(timeLabel, 0, 0, 3,3);
@@ -147,7 +136,6 @@ public class Cross extends Application {
     gameOverPopup.setVgap(50);
     gameOverPopup.setPrefWidth(300);
     gameOverPopup.setVisible(false);
-
   }
 
   private void create_UI_elements() {
@@ -181,7 +169,6 @@ public class Cross extends Application {
     grid = new Grid(SIZE, false);
     set_squaresize();
     canvas = new Canvas(SIZE*squareSize + MARGIN + PANEL, SIZE*squareSize + MARGIN);
-    g = canvas.getGraphicsContext2D();
     draw_background();
   }
 
@@ -207,10 +194,6 @@ public class Cross extends Application {
     stage.setScene(scene);
     stage.setFullScreen(true);
   }
-
-
-
-
 
   private void start_timer() {
     timeline = new Timeline();
@@ -304,8 +287,8 @@ public class Cross extends Application {
     }
   }
 
-
   private void draw_background() {
+    GraphicsContext g = canvas.getGraphicsContext2D();
     g.clearRect(0, 0, SIZE*squareSize + MARGIN + PANEL, SIZE*squareSize + MARGIN);
     g.setLineWidth(1);
     //draw vertical lines
@@ -317,23 +300,5 @@ public class Cross extends Application {
       g.strokeLine(MARGIN/2 + PANEL,y,MARGIN/2+SIZE*squareSize + PANEL,y);
     }
   }
-
-/*
-  private void initialise_sprites() {
-    for (int r=0; r<SIZE; r++) {
-      for (int c=0; c<SIZE; c++) {
-        char k = grid.get(r,c);
-        if (k == 'O') {
-          initialise_player(r,c);
-        }
-        else if (k == 'C') {
-          initialise_coin(r,c);
-        }
-        else if (k == 'E') {
-          initialise_enemy(r,c);
-        }
-      }
-    }
-  }*/
 
 }
