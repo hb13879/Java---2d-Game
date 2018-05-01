@@ -78,7 +78,13 @@ class Grid {
     return score;
   }
 
+  int getCoins() {
+    return MAXCOINS;
+  }
 
+  int getEnemies() {
+    return MAXENEMIES;
+  }
 
   private void initialise_grid() {
     for (int r = 0;r<SIZE;r++) {

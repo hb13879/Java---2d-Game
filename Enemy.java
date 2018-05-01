@@ -10,7 +10,7 @@ public class Enemy {
   private int PANEL;
   private final int MARGIN = 10;
 
-  Enemy(int sqsize, int r, int c, int panel) {
+  Enemy(int sqsize, int panel) {
     squareSize = sqsize;
     PANEL = panel;
     sprite = new Image("Tom.png");
@@ -19,8 +19,8 @@ public class Enemy {
     playerView.setPreserveRatio(true);
     playerView.setSmooth(true);
     playerView.setFitWidth(squareSize);
-    playerView.setX(r*squareSize + MARGIN + PANEL);
-    playerView.setY(c*squareSize + MARGIN);
+    //playerView.setX(r*squareSize + MARGIN + PANEL);
+    //playerView.setY(c*squareSize + MARGIN);
   }
 
   void move(int r, int c) {

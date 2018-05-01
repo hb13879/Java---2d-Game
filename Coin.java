@@ -10,7 +10,7 @@ public class Coin {
   private int PANEL;
   private final int MARGIN = 14;
 
-  Coin(int sqSize, int r, int c, int panel) {
+  Coin(int sqSize, int panel) {
     PANEL = panel;
     squareSize = sqSize;
     sprite = new Image("coin.png");
@@ -19,8 +19,8 @@ public class Coin {
     coinView.setPreserveRatio(true);
     coinView.setSmooth(true);
     coinView.setFitWidth(squareSize*0.9);
-    coinView.setX(r*squareSize + MARGIN + PANEL);
-    coinView.setY(c*squareSize + MARGIN);
+    //coinView.setX(r*squareSize + MARGIN + PANEL);
+    //coinView.setY(c*squareSize + MARGIN);
   }
 
   ImageView getCoinView() {

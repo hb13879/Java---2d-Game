@@ -22,7 +22,7 @@ public class Player {
   private final int PLAYER_TRANSITION_LEN = 100;
 
 
-  Player(int sqsize, int r, int c, int panel) {
+  Player(int sqsize, int panel) {
     squareSize = sqsize;
     PANEL = panel;
     sprite = new Image("sprite.png");
@@ -31,8 +31,8 @@ public class Player {
     playerView.setPreserveRatio(true);
     playerView.setSmooth(true);
     playerView.setFitWidth(squareSize);
-    playerView.setX(r*squareSize + PANEL + MARGIN);
-    playerView.setY(c*squareSize  + MARGIN);
+    //playerView.setX(r*squareSize + PANEL + MARGIN);
+    //playerView.setY(c*squareSize  + MARGIN);
     }
 
   void rotate(double degrees) {
