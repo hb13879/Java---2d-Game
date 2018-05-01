@@ -27,6 +27,7 @@ public class Cross extends Application {
   private final int MARGIN = 20;
   private final int BUFFER = 30;
   private final int PANEL = 200;
+  private final String instructions =  "Collect as many coins as you can before time runs out! But be careful - don't run into any enemies...";
   private int squareSize;
   private int screenHeight;
   private int screenWidth;
@@ -42,42 +43,82 @@ public class Cross extends Application {
   private Timeline timeline;
   private Label timeLabel;
   private Label scoreLabel;
+  private Label playAgain;
+  private TextArea instruct;
 
   private GraphicsContext g;
   private Group root;
   private Canvas canvas;
   private GridPane pane;
+  private GridPane endPane;
   private Scene scene;
   private List<Coin> coinList = new ArrayList<Coin>();
   private List<Enemy> enemyList = new ArrayList<Enemy>();
-  private Button restart;
+  private Button restart1;
+  private Button quit;
+  private Boolean gameOver = false;
+  private Button restart2;
 
   public void start(Stage stage) {
     setup_grid();
     pane = new GridPane();
+    endPane = new GridPane();
     initialise_game();
-    adjust(pane);
+    adjust_pane(pane);
+    adjust_endPane(endPane);
     root.getChildren().add(pane);
+    root.getChildren().add(endPane);
     scene = new Scene(root);
-
-    restart.setOnAction(this::press);
+    scene.getStylesheets().add("ass3Style.css");
+    restart1.setOnAction(this::reset);
+    restart2.setOnAction(this::reset);
+    quit.setOnAction(this::quit);
     scene.setOnKeyReleased(this::move);
     setup_stage(stage);
     stage.show();
   }
 
-  private void adjust(GridPane pane) {
+  private void adjust_pane(GridPane pane) {
     pane.setPadding(new Insets(10));
     pane.setHgap(10);
     pane.setVgap(10);
-    //find.setMaxWidth(300);
-    //cancel.setMaxWidth(300);
+    pane.setPrefWidth(PANEL + MARGIN);
+    //pane.setGridLinesVisible(true);
   }
 
-  private void press(ActionEvent e) {
+  private void adjust_endPane(GridPane endPane) {
+    endPane.setPadding(new Insets(50));
+    endPane.setLayoutX(150);
+    endPane.setLayoutY(150);
+    endPane.setHgap(50);
+    endPane.setVgap(50);
+    endPane.setPrefWidth(300);
+    endPane.setVisible(false);
+    endPane.getStyleClass().add("yellowButton");
+  }
+
+  private void setup_playAgain() {
+    playAgain = new Label("Game Over - Play Again?");
+    endPane.add(playAgain, 5,5,3,3);
+    quit = new Button("Quit Game");
+    endPane.add(quit, 5,8,3,3);
+  }
+
+  private void reset(ActionEvent e) {
     timeSeconds = STARTTIME;
+    gameOver = false;
+    timeline.stop();
+    endPane.setVisible(false);
     grid.reset_game();
+    timeLabel.setText("Time: " + timeSeconds);
+    scoreLabel.setText("Score: " + grid.getScore());
+    player.rotate(0);
+    start_timer();
     draw_sprites();
+  }
+
+  private void quit(ActionEvent e) {
+    Platform.exit();
   }
 
   private void setup_stage(Stage stage) {
@@ -90,13 +131,27 @@ public class Cross extends Application {
     initialise_score();
     initialise_time();
     setup_restart();
+    setup_instructions();
+    setup_playAgain();
     initialise_sprites();
     start_timer();
   }
 
+  private void setup_instructions() {
+    instruct = new TextArea(instructions);
+    instruct.setEditable(false);
+    instruct.setWrapText(true);
+    instruct.getStyleClass().add("instructions");
+    pane.add(instruct, 0, 9,2,9);
+  }
+
   private void setup_restart() {
-    restart = new Button("Restart");
-    pane.add(restart, 0, 6,3,3);
+    restart1 = new Button("Restart");
+    restart2 = new Button("Restart");
+    restart1.getStyleClass().add("yellowButton");
+    restart2.getStyleClass().add("yellowButton");
+    pane.add(restart1, 0, 6,3,3);
+    endPane.add(restart2,3,3,3,3);
   }
 
   private void setup_grid() {
@@ -115,7 +170,7 @@ public class Cross extends Application {
       @Override public void handle(ActionEvent event) {
         timeSeconds--;
         timeLabel.setText("Time: " + timeSeconds);
-        if(timeSeconds<=0){
+        if(timeSeconds<=0 || gameOver){
           timeline.stop();
           end_game();
         }
@@ -138,8 +193,7 @@ public class Cross extends Application {
     scoreIconView.setSmooth(true);
     scoreIconView.setFitWidth(squareSize);
     scoreLabel = new Label("Score: " + grid.getScore(), scoreIconView);
-    scoreLabel.setFont(new Font(20));
-    scoreLabel.setStyle("-fx-text-fill: blue;-fx-border-color:  #545454;-fx-border-width: 3px;-fx-border-style: solid;");
+    scoreLabel.getStyleClass().add("scoreLabel");
     pane.add(scoreLabel, 0, 3,3,3);
   }
 
@@ -151,8 +205,7 @@ public class Cross extends Application {
     timerIconView.setSmooth(true);
     timerIconView.setFitWidth(squareSize);
     timeLabel = new Label("Time: " + timeSeconds, timerIconView);
-    timeLabel.setFont(new Font(20));
-    timeLabel.setStyle("-fx-text-fill: blue;");
+    timeLabel.getStyleClass().add("timeLabel");
     pane.add(timeLabel, 0, 0, 3,3);
   }
 
@@ -165,6 +218,9 @@ public class Cross extends Application {
 
 
   private void move(KeyEvent e) {
+    if(gameOver) {
+      return;
+    }
     if(e.getCode()==KeyCode.RIGHT) {
       grid.move(1,0);
       player.rotate(90);
@@ -182,21 +238,15 @@ public class Cross extends Application {
       player.rotate(180);
     }
     scoreLabel.setText("Score: " + grid.getScore());
-    timeLabel.setText("Time: " + timeSeconds);
     draw_sprites();
-    checkLose();
+    if(grid.gameOver()) {
+      end_game();
+    }
   }
 
   private void end_game() {
-    Platform.exit();
-  }
-
-  private void checkLose() {
-    if(grid.gameOver()) {
-      Text gameOver = new Text(100,500,"You Lose");
-      root.getChildren().add(gameOver);
-      end_game();
-    }
+    gameOver = true;
+    endPane.setVisible(true);
   }
 
   private void draw_sprites() {

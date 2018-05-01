@@ -6,3 +6,4 @@ add inheritance
 add restart button
 add instructions
 get rid of magic numbers
+add sound?

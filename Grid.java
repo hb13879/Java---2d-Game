@@ -32,6 +32,7 @@ class Grid {
     score = 0;
     cur_r = SIZE/2;
     cur_c = SIZE/2;
+    gameOver = false;
     initialise_grid();
     initialise_coins(false);
     initialise_enemies(false);
