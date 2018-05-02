@@ -32,6 +32,24 @@ linear-gradient(#f6ebbe, #e6c34d);
   -fx-border-style: solid;
 }
 
+.finalScore {
+  -fx-text-fill: blue;
+  -fx-font-family: "Helvetica";
+  -fx-font-size: 24px;
+  -fx-border-color:  #545454;
+  -fx-border-width: 3px;
+  -fx-border-style: solid;
+}
+
+.playAgain {
+  -fx-text-fill: blue;
+  -fx-font-family: "Helvetica";
+  -fx-font-size: 24px;
+  -fx-border-color:  #545454;
+  -fx-border-width: 3px;
+  -fx-border-style: solid;
+}
+
 .instructions {
   -fx-effect: innershadow(one-pass-box, gray, 5, 0.3, 1, 1);
   -fx-wrap-text: true;

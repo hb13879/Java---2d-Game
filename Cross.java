@@ -26,25 +26,31 @@ public class Cross extends Application {
   private final int SIZE = 10;
   private final int MARGIN = 20;
   private final int BUFFER = 30;
-  private final int PANEL = 200;
+  private final int PANEL = 300;
+  private final int sidebarWidth = PANEL - MARGIN;
   private final String instructions =  "Collect as many coins as you can before time runs out! But be careful - don't run into any enemies...";
   private int squareSize,screenHeight,screenWidth;
   private int STARTTIME = 10;
   private int timeSeconds = STARTTIME;
   private Boolean gameOver = false;
+  private String user;
+  private Map<Integer,String> highscores = new TreeMap<>();
 
   private Player player;
   private Coin coin;
   private Enemy enemy;
   private ImageView playerView,coinView;
   private Timeline timeline;
-  private Label timeLabel, scoreLabel,playAgain;
+  private Label timeLabel, scoreLabel,playAgain,finalScore,first,congrats;
   private TextArea instruct;
+  private TextField userName;
   private List<Coin> coinList = new ArrayList<Coin>();
   private List<Enemy> enemyList = new ArrayList<Enemy>();
-  private Button restart1,restart2,quit1,quit2;
+  private Button restart1,restart2,quit1,quit2,submit;
   private GridPane sidebar = new GridPane();
   private GridPane gameOverPopup = new GridPane();
+  private GridPane leaderboard = new GridPane();
+  private GridPane userNameForm = new GridPane();
 
   private Group root = new Group();
   private Scene scene = new Scene(root);
@@ -80,16 +86,21 @@ public class Cross extends Application {
     root.getChildren().add(canvas);
     root.getChildren().add(gameOverPopup);
     root.getChildren().add(sidebar);
+    root.getChildren().add(leaderboard);
+    root.getChildren().add(userNameForm);
   }
 
   private void create_sprites() {
+    //create player
     player = new Player(squareSize, PANEL);
     root.getChildren().add(player.getEntityView());
+    //create coins
     for (int i = 0;i < grid.getCoins();i++) {
       coin = new Coin(squareSize, PANEL);
       coinList.add(coin);
       root.getChildren().add(coin.getEntityView());
     }
+    //create enemies
     for (int i = 0;i < grid.getCoins();i++) {
       enemy = new Enemy(squareSize, PANEL);
       enemyList.add(enemy);
@@ -105,6 +116,7 @@ public class Cross extends Application {
     quit1.setOnAction(this::quit);
     quit2.setOnAction(this::quit);
     scene.setOnKeyReleased(this::move);
+    submit.setOnMousePressed(this::submit);
   }
 
   private void layout_panels() {
@@ -113,29 +125,53 @@ public class Cross extends Application {
     sidebar.add(restart1, 0, 6,3,3);
     sidebar.add(instruct, 0, 9,3,9);
     sidebar.add(quit2,0,18,3,3);
-    gameOverPopup.add(playAgain, 5,5,3,3);
-    gameOverPopup.add(quit1, 5,8,3,3);
-    gameOverPopup.add(restart2,3,3,3,3);
+    gameOverPopup.add(playAgain, 0,0,10,3);
+    gameOverPopup.add(finalScore, 0, 1,10,3);
+    gameOverPopup.add(quit1, 1,3,3,3);
+    gameOverPopup.add(restart2,6,3,3,3);
+    gameOverPopup.add(userName,2,2,2,2);
+    leaderboard.add(first,0,0,3,3);
+    userNameForm.add(userName,0,3,3,3);
+    userNameForm.add(congrats,0,0,9,3);
+    userNameForm.add(submit,5,5,3,3);
   }
 
   private void style_panels() {
     sidebar.getStyleClass().add("yellowButton");
     gameOverPopup.getStyleClass().add("yellowButton");
+    leaderboard.getStyleClass().add("yellowButton");
+    userNameForm.getStyleClass().add("yellowButton");
   }
 
   private void adjust_panels() {
     sidebar.setPadding(new Insets(10));
     sidebar.setHgap(10);
     sidebar.setVgap(10);
-    sidebar.setPrefWidth(PANEL + MARGIN);
+    sidebar.setPrefHeight(screenHeight);
+    sidebar.setPrefWidth(sidebarWidth);
     //sidebar.setGridLinesVisible(true);
     gameOverPopup.setPadding(new Insets(50));
-    gameOverPopup.setLayoutX(150);
-    gameOverPopup.setLayoutY(150);
+    gameOverPopup.setLayoutX(PANEL + BUFFER);
+    gameOverPopup.setLayoutY(50);
     gameOverPopup.setHgap(50);
     gameOverPopup.setVgap(50);
-    gameOverPopup.setPrefWidth(300);
+    gameOverPopup.setAlignment(Pos.CENTER);
+    gameOverPopup.setPrefWidth(600);
+    gameOverPopup.setPrefHeight(200);
     gameOverPopup.setVisible(false);
+    gameOverPopup.setHalignment(finalScore, HPos.CENTER);
+    gameOverPopup.setHalignment(playAgain, HPos.CENTER);
+    //gameOverPopup.setGridLinesVisible(true);
+    leaderboard.setLayoutX(screenWidth - sidebarWidth);
+    leaderboard.setPrefWidth(sidebarWidth);
+    leaderboard.setPrefHeight(screenHeight);
+    userNameForm.setLayoutX(PANEL + BUFFER);
+    userNameForm.setLayoutY(50);
+    userNameForm.setAlignment(Pos.CENTER);
+    userNameForm.setPrefWidth(600);
+    userNameForm.setPrefHeight(200);
+    userNameForm.setVisible(false);
+    userNameForm.setHalignment(congrats, HPos.CENTER);
   }
 
   private void create_UI_elements() {
@@ -143,21 +179,29 @@ public class Cross extends Application {
     ImageView timerIconView = assign_icon("clock.png");
     scoreLabel = new Label("Score: " + grid.getScore(), scoreIconView);
     timeLabel = new Label("Time: " + timeSeconds, timerIconView);
+    finalScore = new Label("Your final score was: " + grid.getScore());
+    playAgain = new Label("Game Over - Play Again?");
     instruct = new TextArea(instructions);
     restart1 = new Button("Restart");
     restart2 = new Button("Restart");
-    playAgain = new Label("Game Over - Play Again?");
     quit1 = new Button("Quit Game");
     quit2 = new Button("Quit Game");
-
+    first = new Label("1st Place: Henry");
+    userName = new TextField();
+    submit = new Button("Submit");
+    congrats = new Label("Congratulations! You made the leaderboard \n Please enter your name: ");
   }
 
   private void style_UI_elements() {
     scoreLabel.getStyleClass().add("scoreLabel");
     timeLabel.getStyleClass().add("timeLabel");
+    finalScore.getStyleClass().add("finalScore");
+    playAgain.getStyleClass().add("playAgain");
     instruct.getStyleClass().add("instructions");
     restart1.getStyleClass().add("yellowButton");
     restart2.getStyleClass().add("yellowButton");
+    submit.getStyleClass().add("yellowButton");
+    congrats.getStyleClass().add("yellowButton");
   }
 
   private void adjust_UI_elements() {
@@ -170,6 +214,14 @@ public class Cross extends Application {
     set_squaresize();
     canvas = new Canvas(SIZE*squareSize + MARGIN + PANEL, SIZE*squareSize + MARGIN);
     draw_background();
+  }
+
+  private void submit(MouseEvent e) {
+    user = userName.getText();
+    userNameForm.setVisible(false);
+    grid.adjust_leaderboard();
+    highscores.put(grid.getScore(),user);
+    populate_leaderboard();
   }
 
   private void reset(ActionEvent e) {
@@ -201,8 +253,7 @@ public class Cross extends Application {
       @Override public void handle(ActionEvent event) {
         timeSeconds--;
         timeLabel.setText("Time: " + timeSeconds);
-        if(timeSeconds<=0 || gameOver){
-          timeline.stop();
+        if(timeSeconds<=0){
           end_game();
         }
       }
@@ -262,8 +313,20 @@ public class Cross extends Application {
   }
 
   private void end_game() {
+    timeline.stop();
     gameOver = true;
+    finalScore.setText("Your final score was: " + grid.getScore());
     gameOverPopup.setVisible(true);
+    if(grid.getScore() > grid.getMin()) {
+      userNameForm.setVisible(true);
+    }
+  }
+
+  private void populate_leaderboard() {
+    for (int i = 0;i<highscores.size();i++) {
+      int score = grid.getLeader(i);
+      System.out.println(highscores.get(score) + " " + score);
+    }
   }
 
   private void draw_sprites() {

@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.*;
 
 class Grid {
   private final char SPRITE = 'O';
@@ -12,12 +13,14 @@ class Grid {
   private char[][] grid;
   private int cur_r;
   private int cur_c;
-  private int score = 0;
+  private int score;
   private Random rand = new Random();
   private Boolean gameOver = false;
 
+  private Integer[] highscores;
+  private int min = 0;
+
   private int testNumber = 0;
-  private Grid testGrid;
 
   public static void main(String[] args) {
     Grid program = new Grid(9,false);
@@ -28,31 +31,61 @@ class Grid {
     test();
   }
 
-  void reset_game() {
-    score = 0;
-    cur_r = SIZE/2;
-    cur_c = SIZE/2;
-    gameOver = false;
-    initialise_grid();
-    initialise_coins(false);
-    initialise_enemies(false);
-  }
-
   Grid(int size, Boolean testMode) {
     SIZE = size;
     grid = new char[SIZE][SIZE];
-    cur_r = SIZE/2;
-    cur_c = SIZE/2;
+    set_initial_parameters();
+    initialise_gameboard(testMode);
+    initialise_leaderboard();
+  }
+
+  private void initialise_leaderboard() {
+    highscores = new Integer[5];
+    for (int i = 0;i<5;i++) {
+      highscores[i] = 0;
+    }
+    System.out.println(Arrays.toString(highscores));
+    min = 0;
+  }
+
+  void adjust_leaderboard() {
+    highscores[4] = score;
+    Arrays.sort(highscores,Collections.reverseOrder());
+    System.out.println(Arrays.toString(highscores));
+    min = highscores[4];
+  }
+
+  int getMin() {
+    return min;
+  }
+
+  int getLeader(int i) {
+    return highscores[i];
+  }
+
+  //spawn sprites, player in centre, enemies and coins in random places
+  private void initialise_gameboard(Boolean testMode) {
     initialise_grid();
     initialise_coins(testMode);
     initialise_enemies(testMode);
   }
 
-  char get(int r, int c) {
-    return grid[r][c];
+  //set initial score, position
+  private void set_initial_parameters() {
+    score = 0;
+    cur_r = SIZE/2;
+    cur_c = SIZE/2;
+    gameOver = false;
+  }
+
+  //on restart button press
+  void reset_game() {
+    set_initial_parameters();
+    initialise_gameboard(false);
   }
 
   void move(int r, int c) {
+    //check target square isn't off the edge
     if(cur_r + r > SIZE-1 || cur_c + c > SIZE-1 || cur_r + r < 0 || cur_c + c < 0) {
       return;
     }
@@ -65,6 +98,7 @@ class Grid {
     }
     else if(grid[cur_r][cur_c] == ENEMY) {
       gameOver = true;
+      return;
     }
     grid[cur_r][cur_c] = SPRITE;
     return;
@@ -72,18 +106,6 @@ class Grid {
 
   private void increment_score() {
     score++;
-  }
-
-  int getScore() {
-    return score;
-  }
-
-  int getCoins() {
-    return MAXCOINS;
-  }
-
-  int getEnemies() {
-    return MAXENEMIES;
   }
 
   private void initialise_grid() {
@@ -137,8 +159,24 @@ class Grid {
     grid[r_rand][c_rand] = COIN;
   }
 
+  char get(int r, int c) {
+    return grid[r][c];
+  }
+
   Boolean gameOver() {
     return gameOver;
+  }
+
+  int getScore() {
+    return score;
+  }
+
+  int getCoins() {
+    return MAXCOINS;
+  }
+
+  int getEnemies() {
+    return MAXENEMIES;
   }
 
   @Override
@@ -156,16 +194,12 @@ class Grid {
   }
 
   void test() {
-    test_init();
     test_move();
   }
 
-  void test_init() {
-    testGrid = new Grid(3, true);
-    is(testGrid.toString(),"C../EO./...");
-  }
-
   void test_move() {
+    Grid testGrid = new Grid(3, true);
+    is(testGrid.toString(),"C../EO./...");
     testGrid.move(1,0);
     is(testGrid.toString(),"C../E../.O.");
     testGrid.move(-1,0);
@@ -196,7 +230,6 @@ class Grid {
     is(testGrid.toString(),"C../E../O..");
     testGrid.move(0,-1);
     is(testGrid.toString(),"C../E../O..");
-
   }
 
   void is(Object x, Object y) {

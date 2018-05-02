@@ -1,10 +1,7 @@
-create enumerated type in both grid and cross (for move method in cross)
 1 line comment above functions
-sort out unit testing in grid
 add scenery eg trees
-add inheritance
-add restart button
-add instructions
 get rid of magic numbers
 add sound?
 high score
+on enemy hit
+check background the right size
