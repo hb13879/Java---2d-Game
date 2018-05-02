@@ -2,6 +2,7 @@ import java.util.Random;
 import java.util.*;
 
 class Grid {
+  //character representations of different entities
   private final char SPRITE = 'O';
   private final char EMPTY = '.';
   private final char COIN = 'C';
@@ -56,6 +57,7 @@ class Grid {
     initialise_gameboard(false);
   }
 
+  //alter character representation of game grid to store gamestate
   void move(int r, int c) {
     //check target square isn't off the edge
     if(cur_r + r > SIZE-1 || cur_c + c > SIZE-1 || cur_r + r < 0 || cur_c + c < 0) {

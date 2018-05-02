@@ -29,6 +29,7 @@ public class Cross extends Application {
   private final int PANEL = 300;
   private final int sidebarWidth = PANEL - MARGIN;
   private final String instructions =  "Collect as many coins as you can before time runs out! But be careful - don't run into any enemies...";
+  private final int LEADERBOARDLENGTH = 5;
   private int squareSize,screenHeight,screenWidth;
   private int STARTTIME = 10;
   private int timeSeconds = STARTTIME;
@@ -42,7 +43,7 @@ public class Cross extends Application {
   private Enemy enemy;
   private ImageView playerView,coinView;
   private Timeline timeline;
-  private Label timeLabel, scoreLabel,playAgain,finalScore,congrats;
+  private Label timeLabel, scoreLabel,playAgain,finalScore,congrats,leaderboardTitle;
   private TextArea instruct;
   private TextField userName;
   private List<Coin> coinList = new ArrayList<Coin>();
@@ -132,6 +133,7 @@ public class Cross extends Application {
     gameOverPopup.add(quit1, 1,3,3,3);
     gameOverPopup.add(restart2,6,3,3,3);
     gameOverPopup.add(userName,2,2,2,2);
+    leaderboard.add(leaderboardTitle,0,0,6,3);
     userNameForm.add(userName,0,3,3,3);
     userNameForm.add(congrats,0,0,9,3);
     userNameForm.add(submit,5,5,3,3);
@@ -150,6 +152,8 @@ public class Cross extends Application {
     sidebar.setVgap(10);
     sidebar.setPrefHeight(screenHeight);
     sidebar.setPrefWidth(sidebarWidth);
+    sidebar.setHalignment(timeLabel, HPos.CENTER);
+    sidebar.setHalignment(scoreLabel, HPos.CENTER);
     //sidebar.setGridLinesVisible(true);
     gameOverPopup.setPadding(new Insets(50));
     gameOverPopup.setLayoutX(PANEL + BUFFER);
@@ -166,6 +170,7 @@ public class Cross extends Application {
     leaderboard.setLayoutX(screenWidth - sidebarWidth);
     leaderboard.setPrefWidth(sidebarWidth);
     leaderboard.setPrefHeight(screenHeight);
+    leaderboard.setHalignment(leaderboardTitle, HPos.CENTER);
     userNameForm.setLayoutX(PANEL + BUFFER);
     userNameForm.setLayoutY(50);
     userNameForm.setAlignment(Pos.CENTER);
@@ -189,7 +194,8 @@ public class Cross extends Application {
     quit2 = new Button("Quit Game");
     userName = new TextField();
     submit = new Button("Submit");
-    congrats = new Label("Congratulations! You made the leaderboard \n Please enter your name: ");
+    leaderboardTitle = new Label("Leaderboard");
+    congrats = new Label("Congratulations! You made the leaderboard \nPlease enter your name: ");
   }
 
   private void style_UI_elements() {
@@ -201,6 +207,7 @@ public class Cross extends Application {
     restart1.getStyleClass().add("yellowButton");
     restart2.getStyleClass().add("yellowButton");
     submit.getStyleClass().add("yellowButton");
+    leaderboardTitle.getStyleClass().add("leaderboardTitle");
     congrats.getStyleClass().add("yellowButton");
   }
 
@@ -331,13 +338,15 @@ public class Cross extends Application {
   private void populate_leaderboard() {
     int j = 0;
     leaderboard.getChildren().clear();
+    leaderboard.add(leaderboardTitle,0,0,6,3);
     for(Map.Entry<Integer, List<String>> entry : highscores.entrySet()) {
       for(String name : entry.getValue()) {
         Label tmp = new Label(name + " " + entry.getKey());
-        tmp.getStyleClass().add("yellowButton");
-        leaderboard.add(tmp,0,(j*3),3,3);
+        tmp.getStyleClass().add("leaderboardEntry");
+        leaderboard.add(tmp,0,3 + (j*3),3,3);
         leaderboardList.add(tmp);
-        if(j==4) {
+        leaderboard.setHalignment(tmp, HPos.CENTER);
+        if(j==LEADERBOARDLENGTH - 1) {
           min = entry.getKey();
           return;
         }
