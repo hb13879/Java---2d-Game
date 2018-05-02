@@ -15,6 +15,7 @@ public class Entity {
   protected int squareSize;
   protected int PANEL;
   protected final int MARGIN = 10;
+  protected final int COLLAR = 50;
   protected final int ROTATE_TRANSITION_LEN = 100;
 
   Entity(int sqSize, int panel) {
@@ -35,7 +36,7 @@ public class Entity {
   }
 
   void move(int r, int c) {
-    entityView.setX(r*squareSize + 50 + PANEL);
+    entityView.setX(r*squareSize + COLLAR + PANEL);
     entityView.setY(c*squareSize + MARGIN);
   }
 

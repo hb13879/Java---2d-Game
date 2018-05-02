@@ -27,6 +27,8 @@ public class Display extends Application {
   private final int MARGIN = 20;                    //these parameters adjust various images in the game
   private final int BUFFER = 30;                    // ^^^^^^^^
   private final int PANEL = 300;                    // ^^^^^^^^
+  private final int FORESTADJUSTOR = 50;            // ^^^^^^^^
+  private final int FORESTWIDTH = 150;
   private final int sidebarWidth = PANEL - MARGIN;
   private final String instructions =  "Collect as many coins as you can before time runs out! But be careful - don't run into any enemies...";
   private final int LEADERBOARDLENGTH = 5;          //how many scores are shown on the leaderboard
@@ -170,7 +172,7 @@ public class Display extends Application {
   private void style_UI_elements() {
     scoreLabel.getStyleClass().add("scoreLabel");
     timeLabel.getStyleClass().add("timeLabel");
-    finalScore.getStyleClass().add("finalScore");
+    finalScore.getStyleClass().add("playAgain");
     playAgain.getStyleClass().add("playAgain");
     instruct.getStyleClass().add("instructions");
     restart1.getStyleClass().add("yellowButton");
@@ -332,7 +334,7 @@ public class Display extends Application {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     screenHeight = (int) screenSize.getHeight();
     screenWidth = (int) screenSize.getWidth();
-    squareSize = (screenWidth - 2*PANEL - 50*2)/SIZE;
+    squareSize = (screenWidth - 2*PANEL - FORESTADJUSTOR*2)/SIZE;
     //(Math.min(screenHeight- MARGIN - BUFFER,screenWidth - MARGIN - BUFFER- PANEL)  )/SIZE;
   }
 
@@ -389,43 +391,56 @@ public class Display extends Application {
   }
 
   private void draw_background() {
-    GraphicsContext g = canvas.getGraphicsContext2D();
-    g.clearRect(0, 0, SIZE*squareSize + MARGIN + PANEL, SIZE*squareSize + MARGIN);
-    wood = new Image("wood_panel.png");
-    woodiv = new ImageView(wood);
+    create_background();
+    adjust_background();
+    add_background();
+    add_forest();
+  }
+
+  private void add_background() {
+    root.getChildren().add(woodiv);
+    root.getChildren().add(bgiv);
+  }
+
+  private void adjust_background() {
     woodiv.setFitWidth(screenWidth);
-    bg = new Image("forest_floor.png");
-    bgiv = new ImageView(bg);
-    bgiv.setX(PANEL + 50);
+    bgiv.setX(PANEL + FORESTADJUSTOR);
     bgiv.setY(0);
     bgiv.setSmooth(true);
     bgiv.setFitWidth(SIZE*squareSize);
     bgiv.setFitHeight(SIZE*squareSize);
-    root.getChildren().add(woodiv);
-    root.getChildren().add(bgiv);
-    add_forest();
+  }
+
+  private void create_background() {
+    wood = new Image("wood_panel.png");
+    woodiv = new ImageView(wood);
+    bg = new Image("forest_floor.png");
+    bgiv = new ImageView(bg);
+
   }
 
   private void add_forest() {
     List<ImageView> flist = new ArrayList<>();
+    //LH strip
     for(int i = 0; i<3; i++) {
-      Image forest = new Image("forest2.png");
+      Image forest = new Image("forest.png");
       ImageView f = new ImageView(forest);
-      f.setX(PANEL-50);
+      f.setX(PANEL-FORESTADJUSTOR);
       f.setY(i*(screenHeight/3));
       f.setPreserveRatio(true);
       f.setSmooth(true);
-      f.setFitWidth(150);
+      f.setFitWidth(FORESTWIDTH);
       root.getChildren().add(f);
     }
+    //RH strip
     for(int i = 0; i<3; i++) {
-      Image forest = new Image("forest2.png");
+      Image forest = new Image("forest.png");
       ImageView f = new ImageView(forest);
       f.setX(PANEL + SIZE*squareSize);
       f.setY(i*(screenHeight/3));
       f.setPreserveRatio(true);
       f.setSmooth(true);
-      f.setFitWidth(150);
+      f.setFitWidth(FORESTWIDTH);
       root.getChildren().add(f);
     }
   }

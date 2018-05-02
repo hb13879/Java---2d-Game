@@ -5,49 +5,54 @@ Summary
 I have built a game called 'Coin Hog' using javafx, in which the player has to collect
 as many coins as possible in the limited time without hitting into enemies (poisonous mushrooms).
 Below is a summary of the different elements involved, with notes about the development process.
-The program will be built, tested and run when make is typed into the command line.
+The program will be built, tested and run when make is typed into the command line. Nb the time limit
+can be set using the STARTTIME parameter in Display.java. It is set as very short by default for
+development but can be altered if you wish to play a longer game.
 
 Basic Grid
 
 Grid.java contains the game state and the key game dynamics. A character representation of the game
 grid is stored here. The move function is thoroughly unit tested.
 
-Basic Graphical Display
+Basic Graphical Display and Code Structure
 
-Consider how to display grid with graphics. Use group, make it variable size. Need to test? Made it fit the screen
-it is being displayed on. Fiddled around a lot to parameterise all calcs.
+The dimensions of the display are parameterised as much as possible, and the java.awt.toolkit library is
+used to get screen dimensions for use in these calculations. The game can therefore be resized and should
+fit nicely on any screen for any grid size (within reason obviously) by changing the SIZE parameter in Display.java.
 
-Implemented move function to graphics end - move called from Cross.
+Display.java is really the controller class which also takes care of the graphics. Entity.java is a parent class
+for the player, coins and enemies. Each entity object takes care of its own position, image and rotation.
 
-Added simple coins. Had to add testmode parameter to grid since random initialisation of coins causes problems with
-unit tests of grid based on strig output. Set so coin in testmode always appears in 0,0.
+Graphical Features Used
 
-Added in score using text.
+Below is a summary of the graphical elements used.
 
-How to deal with sprites. Should it be a separate sprite class which stores the images and the position? But then
-would have to be sent its position then just send it back.
+Animation
 
-refactored so each sprite is separate class. Cross is calling from grid and passing info to sprites. Then cross draws
-game state.
+When the player moves, there are animations for both the movement between grid squares and the rotation. This is handled
+inside the player class.
 
-Added enemies. Added timer. Tidied up.
+GridPane UI Panels
 
-Saw online that better to use KeyEvent.getCode() = KeyCode.RIGHT than converting to strings.
+The sidebar, gameoverpopup, username input form for the leaderboard and the leaderboard itself make up the UI
+for the game. They are made up of labels, TextAreas, TextFields and buttons.
 
-Added smooth transition when player moves. Also added smooth rotation animation.
+Timer
 
-Now looking at labels vs text for score and time. It seems labels have more flexibility so I'll refactor to them.
+The timer uses the timer class with keyframes of length 1 second to display the timer to the player.
 
-Added UI panel to left hand side, need to redo maths to make grid work again.
+Leaderboard
 
-Discovered and implemented css stylesheet.
+The leaderboard uses a reverse ordered tree map of integers (the score) to a list of strings (the players who
+have achieved that score and submitted their name via the username input form) to store the data. This
+map, and subsequently the target list, is iterated through in order to create a correctly ordered leaderboard
+of length LEADERBOARDLENGTH.
 
-Added instructions.
+CSS
 
-Refactored the structure of the code in Graphics class, grouping things together better.
+I attach a single css stylesheet for all the ui elements in the game.
 
-Made entity a parent class of player, enemy and coin.
+Further Development
 
-got rid of test objects
-
-adding leaderboard - tree map that is iterated through in order. It maps int (score) to list of names who got that.
+Further work would include tweaking some of the actual css settings to improve the overall aesthetic. Unfortunately
+I ran out of time to do this.
