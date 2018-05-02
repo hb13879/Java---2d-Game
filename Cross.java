@@ -32,9 +32,10 @@ public class Cross extends Application {
   private int squareSize,screenHeight,screenWidth;
   private int STARTTIME = 10;
   private int timeSeconds = STARTTIME;
+  private int min = 0;
   private Boolean gameOver = false;
   private String user;
-  private Map<Integer,List<String>> highscores = new TreeMap<>();
+  private Map<Integer,List<String>> highscores = new TreeMap<>(Collections.reverseOrder());
 
   private Player player;
   private Coin coin;
@@ -218,7 +219,6 @@ public class Cross extends Application {
   private void submit(MouseEvent e) {
     user = userName.getText();
     userNameForm.setVisible(false);
-    grid.adjust_leaderboard();
     if(highscores.containsKey(grid.getScore())) {
       highscores.get(grid.getScore()).add(user);
     }
@@ -323,7 +323,7 @@ public class Cross extends Application {
     gameOver = true;
     finalScore.setText("Your final score was: " + grid.getScore());
     gameOverPopup.setVisible(true);
-    if(grid.getScore() > grid.getMin()) {
+    if(grid.getScore() > min) {
       userNameForm.setVisible(true);
     }
   }
@@ -331,13 +331,16 @@ public class Cross extends Application {
   private void populate_leaderboard() {
     int j = 0;
     leaderboard.getChildren().clear();
-    for(int i = 0;i<highscores.size();i++) {
-      int scoretmp = grid.getLeader(i);
-      for(String name : highscores.get(scoretmp)) {
-        Label tmp = new Label(name + " " + scoretmp);
+    for(Map.Entry<Integer, List<String>> entry : highscores.entrySet()) {
+      for(String name : entry.getValue()) {
+        Label tmp = new Label(name + " " + entry.getKey());
         tmp.getStyleClass().add("yellowButton");
         leaderboard.add(tmp,0,(j*3),3,3);
         leaderboardList.add(tmp);
+        if(j==4) {
+          min = entry.getKey();
+          return;
+        }
         j++;
       }
     }

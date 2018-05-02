@@ -17,9 +17,6 @@ class Grid {
   private Random rand = new Random();
   private Boolean gameOver = false;
 
-  private Integer[] highscores;
-  private int min = 0;
-
   private int testNumber = 0;
 
   public static void main(String[] args) {
@@ -36,29 +33,6 @@ class Grid {
     grid = new char[SIZE][SIZE];
     set_initial_parameters();
     initialise_gameboard(testMode);
-    initialise_leaderboard();
-  }
-
-  private void initialise_leaderboard() {
-    highscores = new Integer[5];
-    for (int i = 0;i<5;i++) {
-      highscores[i] = 0;
-    }
-    min = 0;
-  }
-
-  void adjust_leaderboard() {
-    highscores[4] = score;
-    Arrays.sort(highscores,Collections.reverseOrder());
-    min = highscores[4];
-  }
-
-  int getMin() {
-    return min;
-  }
-
-  int getLeader(int i) {
-    return highscores[i];
   }
 
   //spawn sprites, player in centre, enemies and coins in random places
