@@ -181,6 +181,7 @@ class Grid {
   }
 
   void test_move() {
+    System.out.println("Starting Unit Tests...");
     Grid testGrid = new Grid(3, true);
     is(testGrid.toString(),"C../EO./...");
     testGrid.move(1,0);
@@ -213,6 +214,7 @@ class Grid {
     is(testGrid.toString(),"C../E../O..");
     testGrid.move(0,-1);
     is(testGrid.toString(),"C../E../O..");
+    System.out.println("All Unit Tests Passed");
   }
 
   void is(Object x, Object y) {

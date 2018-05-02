@@ -20,7 +20,7 @@ import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.beans.property.SimpleIntegerProperty;
 
-public class Cross extends Application {
+public class Display extends Application {
 
   private Grid grid;
   private final int SIZE = 10;
@@ -91,9 +91,9 @@ public class Cross extends Application {
   private void layout_panels() {
     sidebar.add(timeLabel, 0, 0, 3,3);
     sidebar.add(scoreLabel, 0, 3,3,3);
-    sidebar.add(restart1, 0, 6,3,3);
-    sidebar.add(instruct, 0, 9,3,9);
-    sidebar.add(quit2,0,18,3,3);
+    sidebar.add(instruct, 0, 6,3,6);
+    sidebar.add(restart1, 0, 12,3,3);
+    sidebar.add(quit2,0,15,3,3);
     gameOverPopup.add(playAgain, 0,0,10,3);
     gameOverPopup.add(finalScore, 0, 1,10,3);
     gameOverPopup.add(quit1, 1,3,3,3);
@@ -121,6 +121,8 @@ public class Cross extends Application {
     sidebar.setPrefWidth(sidebarWidth);
     sidebar.setHalignment(timeLabel, HPos.CENTER);
     sidebar.setHalignment(scoreLabel, HPos.CENTER);
+    sidebar.setHalignment(restart1, HPos.CENTER);
+    sidebar.setHalignment(quit2, HPos.CENTER);
     //sidebar.setGridLinesVisible(true);
     gameOverPopup.setPadding(new Insets(50));
     gameOverPopup.setLayoutX(PANEL + BUFFER);
@@ -173,6 +175,8 @@ public class Cross extends Application {
     instruct.getStyleClass().add("instructions");
     restart1.getStyleClass().add("yellowButton");
     restart2.getStyleClass().add("yellowButton");
+    quit1.getStyleClass().add("yellowButton");
+    quit2.getStyleClass().add("yellowButton");
     submit.getStyleClass().add("yellowButton");
     leaderboardTitle.getStyleClass().add("leaderboardTitle");
     congrats.getStyleClass().add("yellowButton");
@@ -303,7 +307,7 @@ public class Cross extends Application {
         }
       }
     };
-    KeyFrame frame= new KeyFrame(Duration.seconds(1), onFinished);
+    KeyFrame frame = new KeyFrame(Duration.seconds(1), onFinished);
     timeline.setCycleCount(Timeline.INDEFINITE);
     timeline.getKeyFrames().add(frame);
     if(timeline!=null){
@@ -394,25 +398,12 @@ public class Cross extends Application {
     bgiv = new ImageView(bg);
     bgiv.setX(PANEL + 50);
     bgiv.setY(0);
-    //bgiv.setPreserveRatio(true);
     bgiv.setSmooth(true);
     bgiv.setFitWidth(SIZE*squareSize);
     bgiv.setFitHeight(SIZE*squareSize);
-    //bgiv.toBack();
     root.getChildren().add(woodiv);
     root.getChildren().add(bgiv);
-    //g.drawImage(bg,MARGIN/2 + PANEL,MARGIN/2,SIZE*squareSize,SIZE*squareSize);
-    g.setLineWidth(1);
     add_forest();
-
-    /*//draw vertical lines
-    for (int x = MARGIN/2 + PANEL;x < SIZE*squareSize + MARGIN + PANEL; x += squareSize) {
-      g.strokeLine(x,MARGIN/2,x,MARGIN/2+SIZE*squareSize);
-    }
-    //draw horizontal lines
-    for (int y = MARGIN/2;y < SIZE*squareSize + MARGIN; y += squareSize) {
-      g.strokeLine(MARGIN/2 + PANEL,y,MARGIN/2+SIZE*squareSize + PANEL,y);
-    }*/
   }
 
   private void add_forest() {

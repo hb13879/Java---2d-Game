@@ -1,0 +1,53 @@
+Java Assignment 3 Report
+
+Summary
+
+I have built a game called 'Coin Hog' using javafx, in which the player has to collect
+as many coins as possible in the limited time without hitting into enemies (poisonous mushrooms).
+Below is a summary of the different elements involved, with notes about the development process.
+The program will be built, tested and run when make is typed into the command line.
+
+Basic Grid
+
+Grid.java contains the game state and the key game dynamics. A character representation of the game
+grid is stored here. The move function is thoroughly unit tested.
+
+Basic Graphical Display
+
+Consider how to display grid with graphics. Use group, make it variable size. Need to test? Made it fit the screen
+it is being displayed on. Fiddled around a lot to parameterise all calcs.
+
+Implemented move function to graphics end - move called from Cross.
+
+Added simple coins. Had to add testmode parameter to grid since random initialisation of coins causes problems with
+unit tests of grid based on strig output. Set so coin in testmode always appears in 0,0.
+
+Added in score using text.
+
+How to deal with sprites. Should it be a separate sprite class which stores the images and the position? But then
+would have to be sent its position then just send it back.
+
+refactored so each sprite is separate class. Cross is calling from grid and passing info to sprites. Then cross draws
+game state.
+
+Added enemies. Added timer. Tidied up.
+
+Saw online that better to use KeyEvent.getCode() = KeyCode.RIGHT than converting to strings.
+
+Added smooth transition when player moves. Also added smooth rotation animation.
+
+Now looking at labels vs text for score and time. It seems labels have more flexibility so I'll refactor to them.
+
+Added UI panel to left hand side, need to redo maths to make grid work again.
+
+Discovered and implemented css stylesheet.
+
+Added instructions.
+
+Refactored the structure of the code in Graphics class, grouping things together better.
+
+Made entity a parent class of player, enemy and coin.
+
+got rid of test objects
+
+adding leaderboard - tree map that is iterated through in order. It maps int (score) to list of names who got that.
