@@ -34,14 +34,14 @@ public class Cross extends Application {
   private int timeSeconds = STARTTIME;
   private Boolean gameOver = false;
   private String user;
-  private Map<Integer,String> highscores = new TreeMap<>();
+  private Map<Integer,List<String>> highscores = new TreeMap<>();
 
   private Player player;
   private Coin coin;
   private Enemy enemy;
   private ImageView playerView,coinView;
   private Timeline timeline;
-  private Label timeLabel, scoreLabel,playAgain,finalScore,first,congrats;
+  private Label timeLabel, scoreLabel,playAgain,finalScore,congrats;
   private TextArea instruct;
   private TextField userName;
   private List<Coin> coinList = new ArrayList<Coin>();
@@ -51,6 +51,7 @@ public class Cross extends Application {
   private GridPane gameOverPopup = new GridPane();
   private GridPane leaderboard = new GridPane();
   private GridPane userNameForm = new GridPane();
+  private List<Label> leaderboardList = new ArrayList<Label>();
 
   private Group root = new Group();
   private Scene scene = new Scene(root);
@@ -130,7 +131,6 @@ public class Cross extends Application {
     gameOverPopup.add(quit1, 1,3,3,3);
     gameOverPopup.add(restart2,6,3,3,3);
     gameOverPopup.add(userName,2,2,2,2);
-    leaderboard.add(first,0,0,3,3);
     userNameForm.add(userName,0,3,3,3);
     userNameForm.add(congrats,0,0,9,3);
     userNameForm.add(submit,5,5,3,3);
@@ -186,7 +186,6 @@ public class Cross extends Application {
     restart2 = new Button("Restart");
     quit1 = new Button("Quit Game");
     quit2 = new Button("Quit Game");
-    first = new Label("1st Place: Henry");
     userName = new TextField();
     submit = new Button("Submit");
     congrats = new Label("Congratulations! You made the leaderboard \n Please enter your name: ");
@@ -220,7 +219,14 @@ public class Cross extends Application {
     user = userName.getText();
     userNameForm.setVisible(false);
     grid.adjust_leaderboard();
-    highscores.put(grid.getScore(),user);
+    if(highscores.containsKey(grid.getScore())) {
+      highscores.get(grid.getScore()).add(user);
+    }
+    else {
+      List<String> l = new ArrayList<>();
+      l.add(user);
+      highscores.put(grid.getScore(),l);
+    }
     populate_leaderboard();
   }
 
@@ -323,9 +329,17 @@ public class Cross extends Application {
   }
 
   private void populate_leaderboard() {
-    for (int i = 0;i<highscores.size();i++) {
-      int score = grid.getLeader(i);
-      System.out.println(highscores.get(score) + " " + score);
+    int j = 0;
+    leaderboard.getChildren().clear();
+    for(int i = 0;i<highscores.size();i++) {
+      int scoretmp = grid.getLeader(i);
+      for(String name : highscores.get(scoretmp)) {
+        Label tmp = new Label(name + " " + scoretmp);
+        tmp.getStyleClass().add("yellowButton");
+        leaderboard.add(tmp,0,(j*3),3,3);
+        leaderboardList.add(tmp);
+        j++;
+      }
     }
   }
 

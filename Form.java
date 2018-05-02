@@ -33,6 +33,7 @@ public class Form extends Application {
     back = new CheckBox("Search Backwards");
     find = new Button("Find");
     cancel = new Button("Cancel");
+    what = new Label("Find who");
   }
 
   private void layout(GridPane pane) {

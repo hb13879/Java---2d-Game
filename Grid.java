@@ -44,14 +44,12 @@ class Grid {
     for (int i = 0;i<5;i++) {
       highscores[i] = 0;
     }
-    System.out.println(Arrays.toString(highscores));
     min = 0;
   }
 
   void adjust_leaderboard() {
     highscores[4] = score;
     Arrays.sort(highscores,Collections.reverseOrder());
-    System.out.println(Arrays.toString(highscores));
     min = highscores[4];
   }
 
