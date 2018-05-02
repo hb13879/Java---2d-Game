@@ -393,7 +393,7 @@ public class Cross extends Application {
     bg = new Image("forest_floor.png");
     bgiv = new ImageView(bg);
     bgiv.setX(PANEL + 50);
-    bgiv.setY(MARGIN/2);
+    bgiv.setY(0);
     //bgiv.setPreserveRatio(true);
     bgiv.setSmooth(true);
     bgiv.setFitWidth(SIZE*squareSize);
@@ -403,6 +403,7 @@ public class Cross extends Application {
     root.getChildren().add(bgiv);
     //g.drawImage(bg,MARGIN/2 + PANEL,MARGIN/2,SIZE*squareSize,SIZE*squareSize);
     g.setLineWidth(1);
+    add_forest();
 
     /*//draw vertical lines
     for (int x = MARGIN/2 + PANEL;x < SIZE*squareSize + MARGIN + PANEL; x += squareSize) {
@@ -414,8 +415,32 @@ public class Cross extends Application {
     }*/
   }
 
+  private void add_forest() {
+    List<ImageView> flist = new ArrayList<>();
+    for(int i = 0; i<3; i++) {
+      Image forest = new Image("forest2.png");
+      ImageView f = new ImageView(forest);
+      f.setX(PANEL-50);
+      f.setY(i*(screenHeight/3));
+      f.setPreserveRatio(true);
+      f.setSmooth(true);
+      f.setFitWidth(150);
+      root.getChildren().add(f);
+    }
+    for(int i = 0; i<3; i++) {
+      Image forest = new Image("forest2.png");
+      ImageView f = new ImageView(forest);
+      f.setX(PANEL + SIZE*squareSize);
+      f.setY(i*(screenHeight/3));
+      f.setPreserveRatio(true);
+      f.setSmooth(true);
+      f.setFitWidth(150);
+      root.getChildren().add(f);
+    }
+  }
+
   private void adjust_stage(Stage stage) {
-    stage.setTitle("Game");
+    stage.setTitle("CoinHog");
     stage.setScene(scene);
     stage.setFullScreen(true);
   }

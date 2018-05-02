@@ -15,7 +15,7 @@ public class Player extends Entity {
 
   Player(int sqsize, int panel) {
     super(sqsize,panel);
-    sprite = new Image("sprite.png");
+    sprite = new Image("ladybird.png");
     entityView.setImage(sprite);
   }
 
@@ -32,7 +32,7 @@ public class Player extends Entity {
     Path path = new Path();
     MoveTo moveTo = new MoveTo(current_x ,current_y );
     entityView.setX(r*squareSize + PANEL + 50 + BUFFER);
-    entityView.setY(c*squareSize + MARGIN + BUFFER*/);
+    entityView.setY(c*squareSize + MARGIN + BUFFER);
     LineTo lineTo = new LineTo(entityView.getX(),entityView.getY());
     path.getElements().add(moveTo);
     path.getElements().add(lineTo);

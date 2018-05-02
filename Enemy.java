@@ -4,7 +4,7 @@ public class Enemy extends Entity {
 
   Enemy(int sqsize, int panel) {
     super(sqsize,panel);
-    sprite = new Image("Tom.png");
+    sprite = new Image("sprite.png");
     entityView.setImage(sprite);
   }
 }

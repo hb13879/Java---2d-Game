@@ -1,7 +1,8 @@
 1 line comment above functions
 add scenery eg trees
-get rid of magic numbers
+get rid of magic numbers, incl 50 margin
 add sound?
 high score
 on enemy hit
 check background the right size
+images as final 
