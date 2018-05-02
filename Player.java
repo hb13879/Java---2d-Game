@@ -26,13 +26,13 @@ public class Player extends Entity {
     current_x = entityView.getX();
     current_y = entityView.getY();
     //check if at an edge/obstacle
-    if(current_x == r*squareSize + PANEL + MARGIN + BUFFER && current_y == c*squareSize + MARGIN + BUFFER) {
+    if(current_x == r*squareSize + PANEL + 50 + BUFFER && current_y == c*squareSize + MARGIN + BUFFER) {
       return;
     }
     Path path = new Path();
     MoveTo moveTo = new MoveTo(current_x ,current_y );
-    entityView.setX(r*squareSize + PANEL + MARGIN + BUFFER);
-    entityView.setY(c*squareSize + MARGIN + BUFFER);
+    entityView.setX(r*squareSize + PANEL + 50 + BUFFER);
+    entityView.setY(c*squareSize + MARGIN + BUFFER*/);
     LineTo lineTo = new LineTo(entityView.getX(),entityView.getY());
     path.getElements().add(moveTo);
     path.getElements().add(lineTo);

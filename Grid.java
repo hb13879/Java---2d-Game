@@ -82,6 +82,7 @@ class Grid {
     score++;
   }
 
+  //setup an empty grid with player in middle
   private void initialise_grid() {
     for (int r = 0;r<SIZE;r++) {
       for (int c = 0;c<SIZE;c++) {
@@ -91,6 +92,7 @@ class Grid {
     grid[cur_r][cur_c] = SPRITE;
   }
 
+  //add enemies to grid
   private void initialise_enemies(Boolean testMode) {
     if(testMode) {
       grid[1][0] = ENEMY;
@@ -102,6 +104,7 @@ class Grid {
     }
   }
 
+  //add coins to grid
   private void initialise_coins(Boolean testMode) {
     if(testMode) {
       grid[0][0] = COIN;
@@ -113,6 +116,7 @@ class Grid {
     }
   }
 
+  //generate random position for new enemy
   private void spawn_enemy() {
     int r_rand;
     int c_rand;
@@ -123,6 +127,7 @@ class Grid {
     grid[r_rand][c_rand] = ENEMY;
   }
 
+  //generate random position for new coin
   private void spawn_coin() {
     int r_rand;
     int c_rand;
@@ -133,6 +138,7 @@ class Grid {
     grid[r_rand][c_rand] = COIN;
   }
 
+  //return the type of entity at a given grid position
   char get(int r, int c) {
     return grid[r][c];
   }
@@ -145,14 +151,17 @@ class Grid {
     return score;
   }
 
+  //return number of coins in the game
   int getCoins() {
     return MAXCOINS;
   }
 
+  //return number of enemies in the game
   int getEnemies() {
     return MAXENEMIES;
   }
 
+  //for testing purposes -
   @Override
   public String toString() {
     String s = "";

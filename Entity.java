@@ -35,7 +35,7 @@ public class Entity {
   }
 
   void move(int r, int c) {
-    entityView.setX(r*squareSize + MARGIN + PANEL);
+    entityView.setX(r*squareSize + 50 + PANEL);
     entityView.setY(c*squareSize + MARGIN);
   }
 
