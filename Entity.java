@@ -27,6 +27,7 @@ public class Entity {
     entityView.setFitWidth(squareSize);
   }
 
+//rotate sprite
   void rotate(double degrees) {
     RotateTransition tx = new RotateTransition(Duration.millis(ROTATE_TRANSITION_LEN), entityView);
     tx.setFromAngle(entityView.getRotate());

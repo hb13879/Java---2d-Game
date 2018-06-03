@@ -217,6 +217,7 @@ class Grid {
     System.out.println("All Unit Tests Passed");
   }
 
+//test equality
   void is(Object x, Object y) {
     if(x == y || (x != null && x.equals(y))) {
       testNumber++;
