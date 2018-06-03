@@ -338,7 +338,7 @@ public class Display extends Application {
     //(Math.min(screenHeight- MARGIN - BUFFER,screenWidth - MARGIN - BUFFER- PANEL)  )/SIZE;
   }
 
-  //on gameover
+  //on gameover:
   private void end_game() {
     timeline.stop();
     gameOver = true;
