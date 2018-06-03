@@ -152,8 +152,8 @@ public class Display extends Application {
   }
 
   private void create_UI_elements() {
-    ImageView scoreIconView = assign_icon("coin.png");
-    ImageView timerIconView = assign_icon("clock.png");
+    ImageView scoreIconView = assign_icon("Images/coin.png");
+    ImageView timerIconView = assign_icon("Images/clock.png");
     scoreLabel = new Label("Score: " + grid.getScore(), scoreIconView);
     timeLabel = new Label("Time: " + timeSeconds, timerIconView);
     finalScore = new Label("Your final score was: " + grid.getScore());
@@ -412,9 +412,9 @@ public class Display extends Application {
   }
 
   private void create_background() {
-    wood = new Image("wood_panel.png");
+    wood = new Image("Images/wood_panel.png");
     woodiv = new ImageView(wood);
-    bg = new Image("forest_floor.png");
+    bg = new Image("Images/forest_floor.png");
     bgiv = new ImageView(bg);
 
   }
@@ -423,7 +423,7 @@ public class Display extends Application {
     List<ImageView> flist = new ArrayList<>();
     //LH strip
     for(int i = 0; i<3; i++) {
-      Image forest = new Image("forest.png");
+      Image forest = new Image("Images/forest.png");
       ImageView f = new ImageView(forest);
       f.setX(PANEL-FORESTADJUSTOR);
       f.setY(i*(screenHeight/3));
@@ -434,7 +434,7 @@ public class Display extends Application {
     }
     //RH strip
     for(int i = 0; i<3; i++) {
-      Image forest = new Image("forest.png");
+      Image forest = new Image("Images/forest.png");
       ImageView f = new ImageView(forest);
       f.setX(PANEL + SIZE*squareSize);
       f.setY(i*(screenHeight/3));

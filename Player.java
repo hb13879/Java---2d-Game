@@ -15,7 +15,7 @@ public class Player extends Entity {
 
   Player(int sqsize, int panel) {
     super(sqsize,panel);
-    sprite = new Image("ladybird.png");
+    sprite = new Image("Images/ladybird.png");
     entityView.setImage(sprite);
   }
 
