@@ -1,6 +1,6 @@
-JCC = ~/Desktop/jdk-9.0.4/bin/javac
+JCC = javac
 JFLAGS =
-JVM = ~/Desktop/jdk-9.0.4/bin/java
+JVM = java
 .SUFFIXES:.java .class
 
 MAIN = Display
